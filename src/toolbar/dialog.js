@@ -29,7 +29,7 @@
  *      });
  *    </script>
  */
-wysihtml5.toolbar.Dialog = Class.create(
+wysihtml5.toolbar.Dialog = Class.create(wysihtml5.utils.Dispatcher,
   /** @scope wysihtml5.toolbar.Dialog.prototype */ {
   initialize: function(link, container) {
     this.link       = link;
@@ -53,13 +53,13 @@ wysihtml5.toolbar.Dialog = Class.create(
     }.bind(this);
     
     this.link.on("click", function(event) {
-      if (this.link.hasClassName("wysihtml5-command-dialog-opened")) {
+      if (wysihtml5.dom.hasClass(this.link, "wysihtml5-command-dialog-opened")) {
         setTimeout(this.hide.bind(this), 0);
       }
     }.bind(this));
     
     this.container.on("keydown", function(event) {
-      if (event.keyCode === Event.KEY_RETURN) {
+      if (event.keyCode === 13) {
         callbackWrapper(event);
       }
       if (event.keyCode === Event.KEY_ESC) {
@@ -122,14 +122,6 @@ wysihtml5.toolbar.Dialog = Class.create(
           newValue  = this.elementToChange ? (this.elementToChange[fieldName] || "") : field.defaultValue;
       field.setValue(newValue);
     }.bind(this));
-  },
-  
-  observe: function(eventName, handler) {
-    this.container.on("dialog:" + eventName, function(event) { handler(event.memo); });
-  },
-  
-  fire: function(eventName, data) {
-    this.container.fire("dialog:" + eventName, data);
   },
   
   /**

@@ -80,13 +80,13 @@ wysihtml5.utils.caret = {
         isElement       = node.nodeType === Node.ELEMENT_NODE,
         canHaveHTML     = "canHaveHTML" in node ? node.canHaveHTML : (node.nodeName !== "IMG"),
         content         = isElement ? node.innerHTML : node.data,
-        isEmpty         = (content === "" || content === "\uFEFF"),
-        displayStyle    = wysihtml5.utils.getStyle(node, "display"),
+        isEmpty         = (content === "" || content === wysihtml5.INVISIBLE_SPACE),
+        displayStyle    = wysihtml5.dom.getStyle("display").from(node),
         isBlockElement  = (displayStyle === "block" || displayStyle === "list-item");
     
     if (isEmpty && isElement && canHaveHTML) {
-      // Make sure that caret is visible in node by inserted a zero width no breaking space
-      try { node.innerHTML = "\uFEFF"; } catch(e) {}
+      // Make sure that caret is visible in node by inserting a zero width no breaking space
+      try { node.innerHTML = wysihtml5.INVISIBLE_SPACE; } catch(e) {}
     }
     
     if (canHaveHTML) {
@@ -296,7 +296,7 @@ wysihtml5.utils.caret = {
         tempElement   = doc._wysihtml5ScrollIntoViewElement = doc._wysihtml5ScrollIntoViewElement || (function() {
           var element = doc.createElement("span");
           // The element needs content in order to be able to calculate it's position properly
-          element.innerHTML = "\uFEFF";
+          element.innerHTML = wysihtml5.INVISIBLE_SPACE;
           return element;
         })(),
         offsetTop;
@@ -315,7 +315,7 @@ wysihtml5.utils.caret = {
    * Select line where the caret is in
    */
   selectLine: function(doc) {
-    if (wysihtml5.browserSupports.selectionModify()) {
+    if (wysihtml5.browser.supportsSelectionModify()) {
       this._selectLine_W3C(doc);
     } else if (doc.selection) {
       this._selectLine_MSIE(doc);

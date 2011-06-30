@@ -1,4 +1,4 @@
-wysihtml5.commands.createLink = (function() {
+(function(wysihtml5) {
   var undef,
       NODE_NAME = "A";
   
@@ -12,7 +12,7 @@ wysihtml5.commands.createLink = (function() {
       anchor      = anchors[i];
       codeElement = wysihtml5.utils.getParentElement(anchor, { nodeName: "code" });
       textContent = wysihtml5.utils.getTextContent(anchor);
-      
+
       // if <a> contains url-like text content, rename it to <code> to prevent re-autolinking
       // else replace <a> with its childNodes
       if (textContent.match(wysihtml5.utils.autoLink.URL_REG_EXP) && !codeElement) {
@@ -23,7 +23,7 @@ wysihtml5.commands.createLink = (function() {
       }
     }
   }
-  
+
   function _format(element, attributes) {
     var doc             = element.ownerDocument,
         tempClass       = "_wysihtml5-temp-" + new Date().getTime(),
@@ -48,12 +48,12 @@ wysihtml5.commands.createLink = (function() {
         anchor.setAttribute(j, attributes[j]);
       }
     }
-    
+
     elementToSetCaretAfter = anchor;
     if (length === 1) {
       textContent = wysihtml5.utils.getTextContent(anchor);
       hasElementChild = !!anchor.querySelector("*");
-      isEmpty = textContent === "" || textContent === "\uFEFF";
+      isEmpty = textContent === "" || textContent === wysihtml5.INVISIBLE_SPACE;
       if (!hasElementChild && isEmpty) {
         wysihtml5.utils.setTextContent(anchor, anchor.href);
         whiteSpace = doc.createTextNode(" ");
@@ -65,46 +65,42 @@ wysihtml5.commands.createLink = (function() {
     wysihtml5.utils.caret.setAfter(elementToSetCaretAfter);
   }
   
-  /**
-   * TODO: Use cssapplier or formatInline here
-   *
-   * Turns selection into a link
-   * If selection is already a link, it removes the link and wraps it with a <code> element
-   * The <code> element is needed to avoid auto linking
-   * 
-   * @example
-   *    // either ...
-   *    wysihtml5.commands.createLink.exec(element, "createLink", "http://www.google.de");
-   *    // ... or ...
-   *    wysihtml5.commands.createLink.exec(element, "createLink", { href: "http://www.google.de", target: "_blank" });
-   */
-  function exec(element, command, value) {
-    var doc           = element.ownerDocument,
-        anchors       = state(element, command);
-    
-    if (anchors) {
-      // Selection contains links
-      wysihtml5.utils.caret.executeAndRestore(doc, function() {
-        _removeFormat(element, anchors);
-      });
-    } else {
-      // Create links
-      value = typeof(value) === "object" ? value : { href: value };
-      _format(element, value);
+  wysihtml5.commands.createLink = {
+    /**
+     * TODO: Use cssapplier or formatInline here
+     *
+     * Turns selection into a link
+     * If selection is already a link, it removes the link and wraps it with a <code> element
+     * The <code> element is needed to avoid auto linking
+     * 
+     * @example
+     *    // either ...
+     *    wysihtml5.commands.createLink.exec(element, "createLink", "http://www.google.de");
+     *    // ... or ...
+     *    wysihtml5.commands.createLink.exec(element, "createLink", { href: "http://www.google.de", target: "_blank" });
+     */
+    exec: function(element, command, value) {
+      var doc           = element.ownerDocument,
+          anchors       = this.state(element, command);
+
+      if (anchors) {
+        // Selection contains links
+        wysihtml5.utils.caret.executeAndRestore(doc, function() {
+          _removeFormat(element, anchors);
+        });
+      } else {
+        // Create links
+        value = typeof(value) === "object" ? value : { href: value };
+        _format(element, value);
+      }
+    },
+
+    state: function(element, command) {
+      return wysihtml5.commands.formatInline.state(element, command, "A");
+    },
+
+    value: function() {
+      return undef;
     }
-  }
-  
-  function state(element, command) {
-    return wysihtml5.commands.formatInline.state(element, command, "A");
-  }
-  
-  function value() {
-    return undef;
-  }
-  
-  return {
-    exec:   exec,
-    state:  state,
-    value:  value
   };
-})();
+})(wysihtml5);

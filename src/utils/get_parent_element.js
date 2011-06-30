@@ -24,7 +24,7 @@ wysihtml5.utils.getParentElement = (function() {
     if (typeof(desiredNodeNames) === "string") {
       return nodeName === desiredNodeNames;
     } else {
-      return desiredNodeNames.indexOf(nodeName) !== -1;
+      return wysihtml5.utils.array(desiredNodeNames).contains(nodeName);
     }
   }
   

@@ -20,7 +20,7 @@ wysihtml5.utils.hasElementWithClassName = (function() {
   return function(doc, className) {
     // getElementsByClassName is not supported by IE<9
     // but is sometimes mocked via library code (which then doesn't return live node lists)
-    if (!wysihtml5.browserSupports.getElementsByClassName()) {
+    if (!wysihtml5.browser.supportsNativeGetElementsByClassName()) {
       return !!doc.querySelector("." + className);
     }
     

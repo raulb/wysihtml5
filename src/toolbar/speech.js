@@ -13,12 +13,25 @@
  *
  * @author Christopher Blum <christopher.blum@xing.com>
  */
-wysihtml5.toolbar.Speech = (function() {
-  var linkStyle = {
+(function(wysihtml5) {
+  var dom = wysihtml5.dom;
+  
+  var linkStyles = {
     position: "relative"
   };
   
-  var inputStyle = {
+  var wrapperStyles = {
+    left:     0,
+    margin:   0,
+    opacity:  0,
+    overflow: "hidden",
+    padding:  0,
+    position: "absolute",
+    top:      0,
+    zIndex:   1
+  };
+  
+  var inputStyles = {
     cursor:     "inherit",
     fontSize:   "50px",
     height:     "50px",
@@ -30,39 +43,33 @@ wysihtml5.toolbar.Speech = (function() {
     top:        "50%"
   };
   
-  var wrapperStyle = {
-    left:     0,
-    margin:   0,
-    opacity:  0,
-    overflow: "hidden",
-    padding:  0,
-    position: "absolute",
-    top:      0,
-    zIndex:   1
+  var inputAttributes = {
+    "x-webkit-speech": "",
+    "speech":          ""
   };
   
-  var supportsSpeechInput = function(input) {
-    var chromeVersion = navigator.userAgent.match(/Chrome\/(\d+)/) || [, 0];
-    return chromeVersion[1] >= 11 && ("onwebkitspeechchange" in input || "speech" in input);
-  };
-  
-  return function(parent, link) {
-    var input = new Element("input");
-    if (!supportsSpeechInput(input)) {
-      link.hide();
+  wysihtml5.toolbar.Speech = function(parent, link) {
+    var input = document.createElement("input");
+    if (!wysihtml5.browser.supportsSpeechApiOn(input)) {
+      link.style.display = "none";
       return;
     }
     
-    var wrapper = new Element("div");
+    var wrapper = document.createElement("div");
     
     Object.extend(wrapperStyle, {
-      width:  link.getWidth()  + "px",
-      height: link.getHeight() + "px"
+      width:  link.offsetWidth  + "px",
+      height: link.offsetHeight + "px"
     });
     
-    input.setStyle(inputStyle).writeAttribute({ "x-webkit-speech": "", "speech": "" });
-    wrapper.setStyle(wrapperStyle).insert(input);
-    link.setStyle(linkStyle).insert(wrapper);
+    dom.insert(input).into(wrapper);
+    dom.insert(wrapper).into(link);
+    
+    dom.setStyles(inputStyles).on(input);
+    dom.setAttributes(inputAttributes).on(input)
+    
+    dom.setStyles(wrapperStyles).on(wrapper);
+    dom.setStyles(linkStyles).on(link);
     
     var eventName = "onwebkitspeechchange" in input ? "webkitspeechchange" : "speechchange";
     input.on(eventName, function() {
@@ -71,11 +78,11 @@ wysihtml5.toolbar.Speech = (function() {
     });
     
     wrapper.on("click", function(event) {
-      if (link.hasClassName("wysihtml5-command-disabled")) {
+      if (dom.hasClass(link, "wysihtml5-command-disabled")) {
         event.preventDefault();
       }
       
       event.stopPropagation();
     });
   };
-})();
+})(wysihtml5);

@@ -1,4 +1,4 @@
-if ("querySelector" in document || wysihtml5.browserSupports.getElementsByClassName()) {
+if ("querySelector" in document || wysihtml5.browser.supportsNativeGetElementsByClassName()) {
   module("wysihtml5.utils.hasElementWithClassName", {
     teardown: function() {
       $$("iframe.wysihtml5-sandbox").invoke("stopObserving").invoke("remove");

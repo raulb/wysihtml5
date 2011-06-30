@@ -13,8 +13,7 @@ wysihtml5.views.View = Class.create(
   
   _observeViewChange: function() {
     this.parent.observe("beforeload", function() {
-      this.parent.observe("change_view", function(event) {
-        var view = event.memo;
+      this.parent.observe("change_view", function(view) {
         if (view === this.name) {
           this.parent.currentView = this;
           this.show();

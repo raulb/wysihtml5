@@ -1,4 +1,4 @@
-if (wysihtml5.browserSupports.contentEditable()) {
+if (wysihtml5.browser.supported()) {
 
   module("wysihtml5.utils.sanitizeHTML", {
     sanitize: function(html, rules, context, cleanUp) {
@@ -115,8 +115,8 @@ if (wysihtml5.browserSupports.contentEditable()) {
       tags: { p: true, span: true, div: true }
     };
     
-    var result = this.sanitize('<SPAN><P><SPAN><div>MINDESTENS</div>', rules);
-    ok(result.indexOf("MINDESTENS") === result.lastIndexOf("MINDESTENS"));
+    var result = this.sanitize('<SPAN><P><SPAN><div>FOO</div>', rules);
+    ok(result.indexOf("FOO") === result.lastIndexOf("FOO"));
   });
   
   

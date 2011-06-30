@@ -19,7 +19,7 @@ wysihtml5.utils.Synchronizer = Class.create(
    * @param {Boolean} shouldParseHtml Whether the html should be sanitized before inserting it into the textarea
    */
   fromComposerToTextarea: function(shouldParseHtml) {
-    this.textarea.setValue(this._trim(this.composer.getValue()), shouldParseHtml);
+    this.textarea.setValue(wysihtml5.utils.trim(this.composer.getValue()), shouldParseHtml);
   },
   
   /**
@@ -86,17 +86,5 @@ wysihtml5.utils.Synchronizer = Class.create(
     }.bind(this));
     
     this.parent.observe("destroy:composer", stopInterval);
-  },
-  
-  /**
-   * Normalizes white space in the beginning and end
-   * This: "     foo    " will become: " foo "
-   */
-  _trim: (function() {
-    var WHITE_SPACE_START = /^\s+/,
-        WHITE_SPACE_END   = /\s+$/;
-    return function(str) {
-      return str.replace(WHITE_SPACE_START, " ").replace(WHITE_SPACE_END, " ");
-    };
-  })()
+  }
 });

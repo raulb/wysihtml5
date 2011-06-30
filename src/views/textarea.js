@@ -5,9 +5,6 @@ wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
   initialize: function($super, parent, textareaElement, config) {
     $super(parent, textareaElement, config);
     
-    // Store reference to current wysihtml5.Editor instance
-    this.element.store("wysihtml5", parent);
-    
     this._observe();
   },
   
@@ -31,7 +28,7 @@ wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
   },
   
   hasPlaceholderSet: function() {
-    var supportsPlaceholder = wysihtml5.browserSupports.placeholderOn(this.element),
+    var supportsPlaceholder = wysihtml5.browser.supportsPlaceholderAttributeOn(this.element),
         placeholderText     = this.element.getAttribute("placeholder") || null,
         value               = this.element.value,
         isEmpty             = !value;
@@ -53,7 +50,7 @@ wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
          * Calling focus() or blur() on an element doesn't synchronously trigger the attached focus/blur events
          * This is the case for focusin and focusout, so let's use them whenever possible, kkthxbai
          */
-        events = wysihtml5.browserSupports.event("focusin") ? ["focusin", "focusout", "change"] : ["focus", "blur", "change"];
+        events = wysihtml5.browser.supportsEvent("focusin") ? ["focusin", "focusout", "change"] : ["focus", "blur", "change"];
     
     parent.observe("beforeload", function() {
       wysihtml5.utils.observe(element, events, function(event) {

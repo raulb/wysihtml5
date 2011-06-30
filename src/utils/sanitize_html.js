@@ -65,8 +65,6 @@ wysihtml5.utils.sanitizeHTML = (function() {
     "3": _handleText
   };
   
-  var DEFAULT_RULES = { tags: {}, classes: {} };
-  
   // Rename unknown tags to this
   var DEFAULT_NODE_NAME = "span";
   
@@ -79,7 +77,7 @@ wysihtml5.utils.sanitizeHTML = (function() {
    * which later replaces the entire body content
    */
   function sanitizeHTML(elementOrHtml, rules, context, cleanUp) {
-    currentRules = Object.extend(Object.clone(DEFAULT_RULES), rules);
+    currentRules      = rules;
     context = context || elementOrHtml.ownerDocument || document;
     var fragment      = context.createDocumentFragment(),
         isString      = typeof(elementOrHtml) === "string",
@@ -178,7 +176,7 @@ wysihtml5.utils.sanitizeHTML = (function() {
      * A <p> doesn't need to be closed according HTML4-5 spec, we simply replace it with a <div> to preserve its content and layout
      */
     if ("outerHTML" in oldNode) {
-      if (!wysihtml5.browserSupports.closingOfUnclosedTags() &&
+      if (!wysihtml5.browser.autoClosesUnclosedTags() &&
           oldNode.nodeName === "P" &&
           oldNode.outerHTML.slice(-4).toLowerCase() !== "</p>") {
         nodeName = "div";
@@ -277,7 +275,7 @@ wysihtml5.utils.sanitizeHTML = (function() {
     newClassesLength = newClasses.length;
     while (newClassesLength--) {
       currentClass = newClasses[newClassesLength];
-      if (newUniqueClasses.indexOf(currentClass) == -1) {
+      if (!wysihtml5.utils.array(newUniqueClasses).contains(currentClass)) {
         newUniqueClasses.unshift(currentClass);
       }
     }
@@ -306,7 +304,7 @@ wysihtml5.utils.sanitizeHTML = (function() {
    *
    * Therefore we have to check the element's outerHTML for the attribute
    */
-  var HAS_GET_ATTRIBUTE_BUG = !wysihtml5.browserSupports.getAttributeCorrectly();
+  var HAS_GET_ATTRIBUTE_BUG = !wysihtml5.browser.supportsGetAttributeCorrectly();
   function _getAttribute(node, attributeName) {
     attributeName = attributeName.toLowerCase();
     var nodeName = node.nodeName;
@@ -390,10 +388,8 @@ wysihtml5.utils.sanitizeHTML = (function() {
     numbers: (function() {
       var REG_EXP = /\D/g;
       return function(attributeValue) {
-        if (!attributeValue) {
-          return null;
-        }
-        return attributeValue.replace(REG_EXP, "");
+        attributeValue = attributeValue.replace(REG_EXP, "");
+        return attributeValue || null;
       };
     })()
   };

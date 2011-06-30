@@ -97,7 +97,7 @@ wysihtml5.utils.Sandbox = Class.create(
     iframe.setAttribute("marginHeight", "0");
     
     // Setting the src like this prevents ssl warnings in IE6
-    if (!wysihtml5.browserSupports.emptyIframeSrcInHttpsContext()) {
+    if (wysihtml5.browser.throwsMixedContentWarningWhenIframeSrcIsEmpty()) {
       iframe.src = "javascript:'<html></html>'";
     }
     
@@ -150,7 +150,7 @@ wysihtml5.utils.Sandbox = Class.create(
       throw new Error("wysihtml5.Sandbox: " + errorMessage, fileName, lineNumber);
     };
     
-    if (!wysihtml5.browserSupports.sandboxedIframes()) {
+    if (!wysihtml5.browser.supportsSandboxedIframes()) {
       // Unset a bunch of sensitive variables
       // Please note: This isn't hack safe!  
       // It more or less just takes care of basic attacks and prevents accidental theft of sensitive information

@@ -21,22 +21,22 @@ test("Basic test", function() {
   this.container.innerHTML += '<div></div>';
   
   equals(
-    wysihtml5.utils.getStyle(this.container.getElementsByTagName("span")[0], "float"),
+    wysihtml5.dom.getStyle("float").from(this.container.getElementsByTagName("span")[0]),
     "left"
   );
   
   equals(
-    wysihtml5.utils.getStyle(this.container.getElementsByTagName("span")[1], "position"),
+    wysihtml5.dom.getStyle("position").from(this.container.getElementsByTagName("span")[1]),
     "absolute"
   );
   
   equals(
-    wysihtml5.utils.getStyle(this.container.getElementsByTagName("div")[0], "display"),
+    wysihtml5.dom.getStyle("display").from(this.container.getElementsByTagName("div")[0]),
     "block"
   );
   
   equals(
-    wysihtml5.utils.getStyle(this.container.getElementsByTagName("i")[0], "display"),
+    wysihtml5.dom.getStyle("display").from(this.container.getElementsByTagName("i")[0]),
     "inline"
   );
 });
@@ -49,6 +49,6 @@ test("Textarea width/height when value causes overflow", function() {
   textarea.value = Array(500).join("Lorem ipsum dolor foo bar");
   this.container.appendChild(textarea);
   
-  equals(wysihtml5.utils.getStyle(textarea, "width"), "500px");
-  equals(wysihtml5.utils.getStyle(textarea, "height"), "200px");
+  equals(wysihtml5.dom.getStyle("width")  .from(textarea), "500px");
+  equals(wysihtml5.dom.getStyle("height") .from(textarea), "200px");
 });

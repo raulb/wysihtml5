@@ -5,7 +5,14 @@ JS_OUTPUT = "dist/wysihtml5-${VERSION}.js"
 JS_FILES = lib/rangy/rangy-core.js \
   lib/rangy/rangy-cssclassapplier-wysihtml5.js \
   src/wysihtml5.js \
-  src/browser_support.js \
+  src/browser.js \
+  src/dom/class.js \
+  src/dom/get_style.js \
+  src/dom/insert.js \
+  src/dom/set_attributes.js \
+  src/dom/set_styles.js \
+  src/utils/array.js \
+  src/utils/dispatcher.js \
   src/utils/auto_focus.js \
   src/utils/auto_link.js \
   src/utils/caret.js \
@@ -15,7 +22,6 @@ JS_FILES = lib/rangy/rangy-core.js \
   src/utils/copy_attributes.js \
   src/utils/get_in_dom_element.js \
   src/utils/get_parent_element.js \
-  src/utils/get_style.js \
   src/utils/has_element_with_tag_name.js \
   src/utils/has_element_with_class_name.js \
   src/utils/insert_rules.js \
@@ -28,6 +34,7 @@ JS_FILES = lib/rangy/rangy-core.js \
   src/utils/simulate_placeholder.js \
   src/utils/synchronizer.js \
   src/utils/text_content.js \
+  src/utils/trim.js \
   src/utils/unwrap.js \
   src/quirks/clean_pasted_html.js \
   src/quirks/ensure_proper_clearing.js \

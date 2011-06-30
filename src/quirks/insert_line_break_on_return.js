@@ -11,13 +11,13 @@
  * @example
  *    wysihtml5.quirks.insertLineBreakOnReturn(element);
  */
-wysihtml5.quirks.insertLineBreakOnReturn = (function() {
+(function(wysihtml5) {
   var USE_NATIVE_LINE_BREAK_WHEN_CARET_INSIDE_TAGS  = ["LI", "DIV", "P", "H1", "H2", "H3", "H4", "H5", "H6"],
       LIST_TAGS                                     = ["UL", "OL", "MENU"],
       BACKSPACE_KEY                                 = 8,
       RETURN_KEY                                    = 13;
   
-  var keyPress = function(event) {
+  function keyPress(event) {
     if (event.shiftKey || (event.keyCode !== RETURN_KEY && event.keyCode !== BACKSPACE_KEY)) {
       return;
     }
@@ -58,10 +58,10 @@ wysihtml5.quirks.insertLineBreakOnReturn = (function() {
       wysihtml5.commands.exec(element, "insertLineBreak");
       event.preventDefault();
     }
-  };
+  }
   
-  return function(element) {
+  wysihtml5.quirks.insertLineBreakOnReturn = function(element) {
     // keypress doesn't fire when you hit backspace
     wysihtml5.utils.observe(element.ownerDocument, "keydown", keyPress);
   };
-})();
+})(wysihtml5);

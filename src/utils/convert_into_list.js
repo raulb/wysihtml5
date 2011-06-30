@@ -54,7 +54,7 @@ wysihtml5.utils.convertIntoList = (function() {
     for (; i<childNodesLength; i++) {
       currentListItem = currentListItem || _createListItem(doc, list);
       childNode       = childNodes[i];
-      isBlockElement  = wysihtml5.utils.getStyle(childNode, "display") === "block";
+      isBlockElement  = wysihtml5.dom.getStyle("display").from(childNode) === "block";
       isLineBreak     = childNode.nodeName === "BR";
       
       if (isBlockElement) {

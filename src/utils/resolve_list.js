@@ -24,7 +24,7 @@
 wysihtml5.utils.resolveList = (function() {
   
   function _isBlockElement(node) {
-    return wysihtml5.utils.getStyle(node, "display") === "block";
+    return wysihtml5.dom.getStyle("display").from(node) === "block";
   }
   
   function _isLineBreak(node) {

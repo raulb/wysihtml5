@@ -23,9 +23,9 @@ wysihtml5.views.Composer.addMethods({
       var state               = this.getValue(),
           iframe              = this.sandbox.getIframe(),
           element             = this.element,
-          focusBlurElement    = wysihtml5.browserSupports.eventsInIframeCorrectly() ? element : this.sandbox.getWindow(),
+          focusBlurElement    = wysihtml5.browser.supportsEventsInIframeCorrectly() ? element : this.sandbox.getWindow(),
           // Firefox < 3.5 doesn't support the drop event, instead it supports a so called "dragdrop" event which behaves almost the same
-          pasteEvents         = wysihtml5.browserSupports.event("drop") ? ["drop", "paste"] : ["dragdrop", "paste"];
+          pasteEvents         = wysihtml5.browser.supportsEvent("drop") ? ["drop", "paste"] : ["dragdrop", "paste"];
       
       // --------- destroy:composer event ---------
       wysihtml5.utils.observe(iframe, "DOMNodeRemoved", function() {
@@ -63,7 +63,7 @@ wysihtml5.views.Composer.addMethods({
         this.parent.fire("unset_placeholder");
       }.bind(this));
 
-      if (wysihtml5.browserSupports.onDropOnlyWhenOnDragOverIsCancelled()) {
+      if (wysihtml5.browser.firesOnDropOnlyWhenOnDragOverIsCancelled()) {
         wysihtml5.utils.observe(element, ["dragover", "dragenter"], function(event) {
           event.preventDefault();
         }.bind(this));
@@ -73,7 +73,7 @@ wysihtml5.views.Composer.addMethods({
         var dataTransfer = event.dataTransfer,
             data;
         
-        if (dataTransfer && wysihtml5.browserSupports.htmlDataTransfer()) {
+        if (dataTransfer && wysihtml5.browser.supportsDataTransfer()) {
           data = dataTransfer.getData("text/html") || dataTransfer.getData("text/plain");
         }
         if (data) {
@@ -93,7 +93,7 @@ wysihtml5.views.Composer.addMethods({
       Event.KEY_SPACE = Event.KEY_SPACE || 32;
       wysihtml5.utils.observe(element, "keyup", function(event) {
         var keyCode = event.keyCode;
-        if (keyCode == Event.KEY_SPACE || keyCode == Event.KEY_RETURN) {
+        if (keyCode == Event.KEY_SPACE || keyCode == 13) {
           this.parent.fire("newword:composer");
         }
       }.bind(this));
@@ -103,7 +103,7 @@ wysihtml5.views.Composer.addMethods({
       }.bind(this));
 
       // --------- Make sure that images are selected when clicking on them ---------
-      if (!wysihtml5.browserSupports.selectingOfImagesInContentEditableOnClick()) {
+      if (!wysihtml5.browser.canSelectImagesInContentEditable()) {
         wysihtml5.utils.observe(element, "mousedown", function(event) {
           var target = event.target;
           if (target.nodeName == "IMG") {

@@ -1,4 +1,4 @@
-module("wysihtml5.browserSupports", {
+module("wysihtml5.browser", {
   userAgents: {
     iPad:         "Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10",
     iPhone:       "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3",
@@ -12,14 +12,14 @@ module("wysihtml5.browserSupports", {
   },
   
   setup: function() {
-    this.originalUserAgent = wysihtml5.browserSupports.USER_AGENT;
-    this.originalExecCommand = document.execCommand;
-    this.originalQuerySelector = document.querySelector;
-    this.originalQuerySelectorAll = document.querySelectorAll;
+    this.originalUserAgent          = wysihtml5.browser.USER_AGENT;
+    this.originalExecCommand        = document.execCommand;
+    this.originalQuerySelector      = document.querySelector;
+    this.originalQuerySelectorAll   = document.querySelectorAll;
   },
   
   teardown: function() {
-    wysihtml5.browserSupports.USER_AGENT = this.originalUserAgent;
+    wysihtml5.browser.USER_AGENT = this.originalUserAgent;
     document.execCommand = this.originalExecCommand;
     document.querySelector = this.originalQuerySelector;
     document.querySelectorAll = this.originalQuerySelectorAll;
@@ -28,48 +28,48 @@ module("wysihtml5.browserSupports", {
 
 
 test("Check mobile contentEditable support", function() {
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.iPad;
-  ok(!wysihtml5.browserSupports.contentEditable(), "iPad is correctly unsupported");
+  wysihtml5.browser.USER_AGENT = this.userAgents.iPad;
+  ok(!wysihtml5.browser.supported(), "iPad is correctly unsupported");
   
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.iPhone;
-  ok(!wysihtml5.browserSupports.contentEditable(), "iPhone is correctly unsupported");
+  wysihtml5.browser.USER_AGENT = this.userAgents.iPhone;
+  ok(!wysihtml5.browser.supported(), "iPhone is correctly unsupported");
   
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.Android;
-  ok(!wysihtml5.browserSupports.contentEditable(), "Android is correctly unsupported");
+  wysihtml5.browser.USER_AGENT = this.userAgents.Android;
+  ok(!wysihtml5.browser.supported(), "Android is correctly unsupported");
   
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.OperaMobile;
-  ok(!wysihtml5.browserSupports.contentEditable(), "Opera Mobile is correctly unsupported");
+  wysihtml5.browser.USER_AGENT = this.userAgents.OperaMobile;
+  ok(!wysihtml5.browser.supported(), "Opera Mobile is correctly unsupported");
 });
 
 
 test("Check with missing document.execCommand", function() {
   document.execCommand = null;
   // I've no idea why this test fails in Opera... (if you run the test alone, everything works)
-  ok(!wysihtml5.browserSupports.contentEditable(), "Missing document.execCommand causes editor to be unsupported");
+  ok(!wysihtml5.browser.supported(), "Missing document.execCommand causes editor to be unsupported");
 });
 
 
 test("Check IE support", function() {
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.IE6;
+  wysihtml5.browser.USER_AGENT = this.userAgents.IE6;
   document.querySelector = document.querySelectorAll = null;
-  ok(!wysihtml5.browserSupports.contentEditable(), "IE6 is correctly unsupported");
+  ok(!wysihtml5.browser.supported(), "IE6 is correctly unsupported");
   
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.IE7;
+  wysihtml5.browser.USER_AGENT = this.userAgents.IE7;
   document.querySelector = document.querySelectorAll = null;
-  ok(!wysihtml5.browserSupports.contentEditable(), "IE7 is correctly unsupported");
+  ok(!wysihtml5.browser.supported(), "IE7 is correctly unsupported");
   
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.IE8;
+  wysihtml5.browser.USER_AGENT = this.userAgents.IE8;
   document.querySelector = document.querySelectorAll = function() {};
-  ok(wysihtml5.browserSupports.contentEditable(), "IE8 is correctly supported");
+  ok(wysihtml5.browser.supported(), "IE8 is correctly supported");
   
-  wysihtml5.browserSupports.USER_AGENT = this.userAgents.IE9;
+  wysihtml5.browser.USER_AGENT = this.userAgents.IE9;
   document.querySelector = document.querySelectorAll = function() {};
-  ok(wysihtml5.browserSupports.contentEditable(), "IE9 is correctly supported");
+  ok(wysihtml5.browser.supported(), "IE9 is correctly supported");
 });
 
 
 test("Check placeholder support", function() {
   var pseudoElement = new Element("div");
   pseudoElement.placeholder = "";
-  ok(wysihtml5.browserSupports.placeholderOn(pseudoElement));
+  ok(wysihtml5.browser.supportsPlaceholderAttributeOn(pseudoElement));
 });

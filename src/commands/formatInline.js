@@ -31,7 +31,7 @@
  *   output:
  *      <span>ab|c</span> de|<b>fgh</b>
  */
-wysihtml5.commands.formatInline = (function() {
+(function(wysihtml5) {
   var undef,
       // Treat <b> as <strong> and vice versa
       ALIAS_MAPPING = {
@@ -55,47 +55,42 @@ wysihtml5.commands.formatInline = (function() {
     return cssClassApplier[identifier];
   }
   
-  function exec(element, command, tagName, className, classRegExp) {
-    var range = wysihtml5.utils.caret.getRange(element.ownerDocument);
-    if (!range) {
-      return false;
-    }
-    _getApplier(tagName, className, classRegExp).toggleRange(range);
-    wysihtml5.utils.caret.setSelection(range);
-  }
-  
-  function state(element, command, tagName, className, classRegExp) {
-    var doc           = element.ownerDocument,
-        aliasTagName  = ALIAS_MAPPING[tagName] || tagName,
-        range;
-    
-    // Check whether the document contains a node with the desired tagName
-    if (!wysihtml5.utils.hasElementWithTagName(doc, tagName) &&
-        !wysihtml5.utils.hasElementWithTagName(doc, aliasTagName)) {
-      return false;
-    }
-     
-     // Check whether the document contains a node with the desired className
-    if (className && !wysihtml5.utils.hasElementWithClassName(doc, className)) {
-       return false;
-    }
-    
-    range = wysihtml5.utils.caret.getRange(doc);
-    if (!range) {
-      return false;
-    }
-    
-    return _getApplier(tagName, className, classRegExp).isAppliedToRange(range);
-  }
-  
-  function value(element, command) {
-    // TODO
-    return undef;
-  }
-  
   return {
-    exec:   exec,
-    state:  state,
-    value:  value
+    exec: function(element, command, tagName, className, classRegExp) {
+      var range = wysihtml5.utils.caret.getRange(element.ownerDocument);
+      if (!range) {
+        return false;
+      }
+      _getApplier(tagName, className, classRegExp).toggleRange(range);
+      wysihtml5.utils.caret.setSelection(range);
+    },
+
+    state: function(element, command, tagName, className, classRegExp) {
+      var doc           = element.ownerDocument,
+          aliasTagName  = ALIAS_MAPPING[tagName] || tagName,
+          range;
+
+      // Check whether the document contains a node with the desired tagName
+      if (!wysihtml5.utils.hasElementWithTagName(doc, tagName) &&
+          !wysihtml5.utils.hasElementWithTagName(doc, aliasTagName)) {
+        return false;
+      }
+
+       // Check whether the document contains a node with the desired className
+      if (className && !wysihtml5.utils.hasElementWithClassName(doc, className)) {
+         return false;
+      }
+
+      range = wysihtml5.utils.caret.getRange(doc);
+      if (!range) {
+        return false;
+      }
+
+      return _getApplier(tagName, className, classRegExp).isAppliedToRange(range);
+    },
+
+    value: function() {
+      return undef;
+    }
   };
-})();
+})(wysihtml5);

@@ -13,7 +13,7 @@ wysihtml5.commands = {
    *    wysihtml5.commands.supports(element, "createLink");
    */
   support: function(element, command) {
-    return wysihtml5.browserSupports.command(element.ownerDocument, command);
+    return wysihtml5.browser.supportsCommand(element.ownerDocument, command);
   },
   
   /**

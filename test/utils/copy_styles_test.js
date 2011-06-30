@@ -33,17 +33,17 @@ test("Basic Tests", function() {
   
   wysihtml5.utils.copyStyles("width", "height", "text-align", "float").from(this.div).to(this.span);
   
-  equals(this.span.getStyle("width"), "400px", "Width correctly copied");
-  equals(this.span.getStyle("height"), "200px", "Height correctly copied");
-  equals(this.span.getStyle("text-align"), "right", "Text-align correctly copied");
-  equals(this.span.getStyle("float"), "left", "Float correctly copied");
+  equals(wysihtml5.dom.getStyle("width")      .from(this.span), "400px",  "Width correctly copied");
+  equals(wysihtml5.dom.getStyle("height")     .from(this.span), "200px",  "Height correctly copied");
+  equals(wysihtml5.dom.getStyle("text-align") .from(this.span), "right",  "Text-align correctly copied");
+  equals(wysihtml5.dom.getStyle("float")      .from(this.span), "left",   "Float correctly copied");
 });
 
 
 test("Whether it copies native user agent styles", function() {
   wysihtml5.utils.copyStyles("display").from(this.span).to(this.div);
   
-  equals(this.div.getStyle("display"), "inline", "Display correctly copied");
+  equals(wysihtml5.dom.getStyle("display").from(this.div), "inline", "Display correctly copied");
 });
 
 
@@ -59,17 +59,17 @@ test("Advanced tests", function() {
   
   // Opera and IE internally convert color values either to rgb or hexcode, and some version of IE either
   // strip or add white spaces between rgb values
-  var divColor = this.div.getStyle("color").replace(/\s+/g, "");
+  var divColor = wysihtml5.dom.getStyle("color").from(this.div).replace(/\s+/g, "");
   ok(divColor == "rgb(255,0,0)" || divColor == "#ff0000", "First div has correct color");
   
-  var anotherDivColor = this.anotherDiv.getStyle("color").replace(/\s+/g, "");
+  var anotherDivColor = wysihtml5.dom.getStyle("color").from(this.anotherDiv).replace(/\s+/g, "");
   ok(anotherDivColor == "rgb(255,0,0)" || anotherDivColor == "#ff0000", "Second div has correct color");
   
-  equals(this.div.getStyle("textDecoration"), "underline", "Text-decoration hasn't been overwritten");
+  equals(wysihtml5.dom.getStyle("textDecoration").from(this.div), "underline", "Text-decoration hasn't been overwritten");
   
   if ("MozBorderRadius" in this.div.style) {
-    equals(this.div.getStyle("-moz-border-radius"), "5px 5px 5px 5px", "First div has correct border-radius");
-    equals(this.anotherDiv.getStyle("-moz-border-radius"), "5px 5px 5px 5px", "Second div has correct border-radius");
+    equals(wysihtml5.dom.getStyle("-moz-border-radius").from(this.div),        "5px 5px 5px 5px", "First div has correct border-radius");
+    equals(wysihtml5.dom.getStyle("-moz-border-radius").from(this.anotherDiv), "5px 5px 5px 5px", "Second div has correct border-radius");
   }
 });
 
@@ -106,5 +106,5 @@ test("Test copying styles that were set via style element", function() {
     .from(this.span)
     .to(this.div);
   
-  equals(this.div.getStyle("font-size"), "16px", "Font-size correctly copied");
+  equals(wysihtml5.dom.getStyle("font-size").from(this.div), "16px", "Font-size correctly copied");
 });

@@ -21,7 +21,7 @@
  *    wysihtml5.utils.copyStyles(["overflow-y", "width", "height"]).from(textarea).to(div).andTo(anotherDiv);
  *
  */
-wysihtml5.utils.copyStyles = (function() {
+(function(api) {
   
   /**
    * Mozilla and Opera recalculate the computed width when box-sizing: boder-box; is set
@@ -32,18 +32,18 @@ wysihtml5.utils.copyStyles = (function() {
   
   var shouldIgnoreBoxSizingBorderBox = function(element) {
     if (hasBoxSizingBorderBox(element)) {
-       return parseInt(wysihtml5.utils.getStyle(element, "width"), 10) < element.getWidth();
+       return parseInt(api.getStyle("width").from(element), 10) < element.getWidth();
     }
     return false;
   };
   
   var hasBoxSizingBorderBox = function(element) {
     return BOX_SIZING_PROPERTIES.find(function(property) {
-      return wysihtml5.utils.getStyle(element, property) == "border-box";
+      return api.getStyle(property).from(element) === "border-box";
     });
   };
   
-  return function(stylesToCopy) {
+  api.copyStyles = function(stylesToCopy) {
     stylesToCopy = $A(arguments).flatten();
     
     return {
@@ -53,7 +53,7 @@ wysihtml5.utils.copyStyles = (function() {
         }
         
         var cssText = stylesToCopy.inject("", function(str, property) {
-          var propertyValue = wysihtml5.utils.getStyle(element, property);
+          var propertyValue = api.getStyle(property).from(element);
           if (propertyValue) {
             str += property + ":" + propertyValue + ";";
           }
@@ -66,11 +66,11 @@ wysihtml5.utils.copyStyles = (function() {
              * Use static Element.setStyle method, since element is not
              * necessarily prototype extended
              */
-            Element.setStyle(element, cssText);
+            api.setStyles(cssText).on(element);
             return { andTo: arguments.callee };
           }
         };
       }
     };
   };
-})();
+})(wysihtml5.dom);

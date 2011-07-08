@@ -96,23 +96,25 @@
     parserRules:  wysihtml5ParserRules
   });
   
+  var log = document.getElementById("log");
+  
   editor
     .observe("load", function() {
-      $("log").insert("<div>load</div>");
+      log.innerHTML += "<div>load</div>";
     })
     .observe("focus", function() {
-      $("log").insert("<div>focus</div>");
+      log.innerHTML += "<div>focus</div>";
     })
     .observe("blur", function() {
-      $("log").insert("<div>blur</div>");
+      log.innerHTML += "<div>blur</div>";
     })
     .observe("change", function() {
-      $("log").insert("<div>change</div>");
+      log.innerHTML += "<div>change</div>";
     })
     .observe("paste", function() {
-      $("log").insert("<div>paste</div>");
+      log.innerHTML += "<div>paste</div>";
     })
     .observe("newword:composer", function() {
-      $("log").insert("<div>newword:composer</div>");
+      log.innerHTML += "<div>newword:composer</div>";
     });
 </script>

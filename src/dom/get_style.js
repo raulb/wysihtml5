@@ -16,7 +16,7 @@ wysihtml5.dom.getStyle = (function() {
   return function(property) {
     return {
       from: function(element) {
-        if (element.nodeType !== Node.ELEMENT_NODE) {
+        if (element.nodeType !== wysihtml5.ELEMENT_NODE) {
           return;
         }
 

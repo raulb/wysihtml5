@@ -104,8 +104,8 @@ wysihtml5.assert.htmlEquals = (function() {
   return function(actual, expected, message, config) {
     config = config || {};
     if (NEEDS_TO_BE_PREPARSED) {
-      actual = wysihtml5.utils.getInDomElement(actual).innerHTML;
-      expected = wysihtml5.utils.getInDomElement(expected).innerHTML;
+      actual = wysihtml5.dom.getAsDom(actual).innerHTML;
+      expected = wysihtml5.dom.getAsDom(expected).innerHTML;
     }
     
     if (config.normalizeWhiteSpace || DOESNT_PRESERVE_WHITE_SPACE) {

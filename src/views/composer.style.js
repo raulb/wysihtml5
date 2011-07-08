@@ -1,6 +1,8 @@
 (function(wysihtml5) {
   var dom             = wysihtml5.dom,
-      HOST_TEMPLATE   = document.createElement("div"),
+      doc             = document,
+      win             = window,
+      HOST_TEMPLATE   = doc.createElement("div"),
       /**
        * Styles to copy from textarea to the composer element
        */
@@ -63,8 +65,8 @@
       element.setActive();
     } else {
       var elementStyle = element.style,
-          originalScrollTop = document.documentElement.scrollTop || document.body.scrollTop,
-          originalScrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft,
+          originalScrollTop = doc.documentElement.scrollTop || doc.body.scrollTop,
+          originalScrollLeft = doc.documentElement.scrollLeft || doc.body.scrollLeft,
           originalStyles = {
             position:         elementStyle.position,
             top:              elementStyle.top,
@@ -84,92 +86,91 @@
       
       dom.setStyles(originalStyles).on(element);
       
-      if (window.scrollTo) {
+      if (win.scrollTo) {
         // Some browser extensions unset this method to prevent annoyances
         // "Better PopUp Blocker" for Chrome http://code.google.com/p/betterpopupblocker/source/browse/trunk/blockStart.js#100
         // Issue: http://code.google.com/p/betterpopupblocker/issues/detail?id=1
-        window.scrollTo(originalScrollLeft, originalScrollTop);
+        win.scrollTo(originalScrollLeft, originalScrollTop);
       }
     }
   };
   
   
-  wysihtml5.views.Composer.addMethods({
-    style: function() {
-      var originalActiveElement = document.querySelector(":focus"),
-          textareaElement       = this.textarea.element,
-          hasPlaceholder        = textareaElement.hasAttribute("placeholder"),
-          originalPlaceholder   = hasPlaceholder && textareaElement.getAttribute("placeholder");
-      this.focusStylesHost      = this.focusStylesHost  || HOST_TEMPLATE.cloneNode();
-      this.blurStylesHost       = this.blurStylesHost   || HOST_TEMPLATE.cloneNode();
-    
-      // Remove placeholder before copying (as the placeholder has an affect on the computed style)
-      if (hasPlaceholder) {
-        textareaElement.removeAttribute("placeholder");
-      }
-    
-      if (textareaElement === originalActiveElement) {
-        textareaElement.blur();
-      }
-    
-      // --------- iframe styles (has to be set before editor styles, otherwise IE9 sets wrong fontFamily on blurStylesHost) ---------
-      dom.copyStyles(BOX_FORMATTING).from(textareaElement).to(this.iframe).andTo(this.blurStylesHost);
-    
-      // --------- editor styles ---------
-      dom.copyStyles(TEXT_FORMATTING).from(textareaElement).to(this.element).andTo(this.blurStylesHost);
-    
-      // --------- apply standard rules ---------
-      dom.insertRules(ADDITIONAL_CSS_RULES).into(this.element.ownerDocument);
-    
-      // --------- :focus styles ---------
-      focusWithoutScrolling(textareaElement);
-      dom.copyStyles(BOX_FORMATTING).from(textareaElement).to(this.focusStylesHost);
-      dom.copyStyles(TEXT_FORMATTING).from(textareaElement).to(this.focusStylesHost);
-    
-      // Make sure that we don't change the display style of the iframe when copying styles oblur/onfocus
-      // this is needed for when the change_view event is fired where the iframe is hidden and then
-      // the blur event fires and re-displays it
-      var boxFormattingStyles = wysihtml5.utils.array(BOX_FORMATTING).without(["display"]);
-    
-      // --------- restore focus ---------
-      if (originalActiveElement) {
-        originalActiveElement.focus();
-      } else {
-        textareaElement.blur();
-      }
-    
-      // --------- restore placeholder ---------
-      if (hasPlaceholder) {
-        textareaElement.setAttribute("placeholder", originalPlaceholder);
-      }
-    
-      // When copying styles, we only get the computed style which is never returned in percent unit
-      // Therefore we've to recalculate style onresize
-      if (!wysihtml5.browser.hasCurrentStyleProperty()) {
-        Event.observe(window, "resize", function() {
-          var originalDisplayStyle = dom.getStyle("display").from(textareaElement);
-          textareaElement.style.display = "";
-          dom.copyStyles(RESIZE_STYLE)
-            .from(textareaElement)
-            .to(this.iframe)
-            .andTo(this.focusStylesHost)
-            .andTo(this.blurStylesHost);
-          textareaElement.style.display = originalDisplayStyle;
-        }.bind(this));
-      }
-    
-      // --------- Sync focus/blur styles ---------
-      this.parent.observe("focus:composer", function() {
-        dom.copyStyles(boxFormattingStyles).from(this.focusStylesHost).to(this.iframe);
-        dom.copyStyles(TEXT_FORMATTING).from(this.focusStylesHost).to(this.element);
-      }.bind(this));
-
-      this.parent.observe("blur:composer", function() {
-        dom.copyStyles(boxFormattingStyles).from(this.blurStylesHost).to(this.iframe);
-        dom.copyStyles(TEXT_FORMATTING).from(this.blurStylesHost).to(this.element);
-      }.bind(this));
-    
-      return this;
+  wysihtml5.views.Composer.prototype.style = function() {
+    var that                  = this,
+        originalActiveElement = doc.querySelector(":focus"),
+        textareaElement       = this.textarea.element,
+        hasPlaceholder        = textareaElement.hasAttribute("placeholder"),
+        originalPlaceholder   = hasPlaceholder && textareaElement.getAttribute("placeholder");
+    this.focusStylesHost      = this.focusStylesHost  || HOST_TEMPLATE.cloneNode();
+    this.blurStylesHost       = this.blurStylesHost   || HOST_TEMPLATE.cloneNode();
+  
+    // Remove placeholder before copying (as the placeholder has an affect on the computed style)
+    if (hasPlaceholder) {
+      textareaElement.removeAttribute("placeholder");
     }
-  });
-})(wysihtml5)
+  
+    if (textareaElement === originalActiveElement) {
+      textareaElement.blur();
+    }
+  
+    // --------- iframe styles (has to be set before editor styles, otherwise IE9 sets wrong fontFamily on blurStylesHost) ---------
+    dom.copyStyles(BOX_FORMATTING).from(textareaElement).to(this.iframe).andTo(this.blurStylesHost);
+  
+    // --------- editor styles ---------
+    dom.copyStyles(TEXT_FORMATTING).from(textareaElement).to(this.element).andTo(this.blurStylesHost);
+  
+    // --------- apply standard rules ---------
+    dom.insertCSS(ADDITIONAL_CSS_RULES).into(this.element.ownerDocument);
+  
+    // --------- :focus styles ---------
+    focusWithoutScrolling(textareaElement);
+    dom.copyStyles(BOX_FORMATTING).from(textareaElement).to(this.focusStylesHost);
+    dom.copyStyles(TEXT_FORMATTING).from(textareaElement).to(this.focusStylesHost);
+  
+    // Make sure that we don't change the display style of the iframe when copying styles oblur/onfocus
+    // this is needed for when the change_view event is fired where the iframe is hidden and then
+    // the blur event fires and re-displays it
+    var boxFormattingStyles = wysihtml5.lang.array(BOX_FORMATTING).without(["display"]);
+  
+    // --------- restore focus ---------
+    if (originalActiveElement) {
+      originalActiveElement.focus();
+    } else {
+      textareaElement.blur();
+    }
+  
+    // --------- restore placeholder ---------
+    if (hasPlaceholder) {
+      textareaElement.setAttribute("placeholder", originalPlaceholder);
+    }
+  
+    // When copying styles, we only get the computed style which is never returned in percent unit
+    // Therefore we've to recalculate style onresize
+    if (!wysihtml5.browser.hasCurrentStyleProperty()) {
+      dom.observe(win, "resize", function() {
+        var originalDisplayStyle = dom.getStyle("display").from(textareaElement);
+        textareaElement.style.display = "";
+        dom.copyStyles(RESIZE_STYLE)
+          .from(textareaElement)
+          .to(that.iframe)
+          .andTo(that.focusStylesHost)
+          .andTo(that.blurStylesHost);
+        textareaElement.style.display = originalDisplayStyle;
+      });
+    }
+  
+    // --------- Sync focus/blur styles ---------
+    this.parent.observe("focus:composer", function() {
+      dom.copyStyles(boxFormattingStyles) .from(that.focusStylesHost).to(that.iframe);
+      dom.copyStyles(TEXT_FORMATTING)     .from(that.focusStylesHost).to(that.element);
+    });
+
+    this.parent.observe("blur:composer", function() {
+      dom.copyStyles(boxFormattingStyles) .from(that.blurStylesHost).to(that.iframe);
+      dom.copyStyles(TEXT_FORMATTING)     .from(that.blurStylesHost).to(that.element);
+    });
+  
+    return this;
+  };
+})(wysihtml5);

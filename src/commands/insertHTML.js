@@ -6,7 +6,7 @@
       if (wysihtml5.commands.support(element, command)) {
         element.ownerDocument.execCommand(command, false, html);
       } else {
-        wysihtml5.utils.caret.insertHTML(element.ownerDocument, html);
+        wysihtml5.selection.insertHTML(element.ownerDocument, html);
       }
     },
 

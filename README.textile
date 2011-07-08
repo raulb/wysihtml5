@@ -44,7 +44,7 @@ Following is a list of all configuration options with their corresponding defaul
     // Object which includes parser rules (set this to examples/rules/spec.json or your own spec, otherwise only span tags are allowed!)
     parserRules:          null,
     // Parser method to use when the user inserts content via copy & paste
-    parser:               wysihtml5.utils.sanitizeHTML || Prototype.K,
+    parser:               wysihtml5.dom.parse || Prototype.K,
     // Class name which should be set on the contentEditable element in the created sandbox iframe, can be styled via the 'stylesheets' option
     composerClassName:    "wysihtml5-editor",
     // Class name to add to the body when the wysihtml5 editor is supported

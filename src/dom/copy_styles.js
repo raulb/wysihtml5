@@ -13,12 +13,10 @@
  *    with the element where to copy the styles to (see example)
  *
  * @example
- *    var textarea    = $("textarea"),
- *        div         = $$("div[contenteditable=true]")[0],
- *        anotherDiv  = $$("div[contenteditable=true]")[1];
- *    wysihtml5.utils.copyStyles("width", "height").from(textarea).to(div);
- *    // or (advanced example):
- *    wysihtml5.utils.copyStyles(["overflow-y", "width", "height"]).from(textarea).to(div).andTo(anotherDiv);
+ *    var textarea    = document.querySelector("textarea"),
+ *        div         = document.querySelector("div[contenteditable=true]"),
+ *        anotherDiv  = document.querySelector("div.preview");
+ *    wysihtml5.dom.copyStyles(["overflow-y", "width", "height"]).from(textarea).to(div).andTo(anotherDiv);
  *
  */
 (function(api) {
@@ -38,14 +36,16 @@
   };
   
   var hasBoxSizingBorderBox = function(element) {
-    return BOX_SIZING_PROPERTIES.find(function(property) {
-      return api.getStyle(property).from(element) === "border-box";
-    });
+    var i       = 0,
+        length  = BOX_SIZING_PROPERTIES.length;
+    for (; i<length; i++) {
+      if (api.getStyle(BOX_SIZING_PROPERTIES[i]).from(element) === "border-box") {
+        return BOX_SIZING_PROPERTIES[i];
+      }
+    }
   };
   
   api.copyStyles = function(stylesToCopy) {
-    stylesToCopy = $A(arguments).flatten();
-    
     return {
       from: function(element) {
         if (shouldIgnoreBoxSizingBorderBox(element)) {

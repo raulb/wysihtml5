@@ -7,7 +7,8 @@
  *    wysihtml5.quirks.ensureProperClearing(myContentEditableElement);
  */
 (function(wysihtml5) {
-
+  var dom = wysihtml5.dom;
+  
   wysihtml5.quirks.ensureProperClearing = (function() {
     var clearIfNecessary = function(event) {
       var element = this;
@@ -21,7 +22,7 @@
     };
 
     return function(contentEditableElement) {
-      wysihtml5.utils.observe(contentEditableElement, ["cut", "keydown"], clearIfNecessary);
+      dom.observe(contentEditableElement, ["cut", "keydown"], clearIfNecessary);
     };
   })();
 
@@ -39,11 +40,11 @@
     var ELEMENTS_THAT_CONTAIN_LI = ["OL", "UL", "MENU"];
 
     var clearIfNecessary = function(element, contentEditableElement) {
-      if (!contentEditableElement.firstChild || !wysihtml5.utils.array(ELEMENTS_THAT_CONTAIN_LI).contains(contentEditableElement.firstChild.nodeName)) {
+      if (!contentEditableElement.firstChild || !wysihtml5.lang.array(ELEMENTS_THAT_CONTAIN_LI).contains(contentEditableElement.firstChild.nodeName)) {
         return;
       }
 
-      var list = wysihtml5.utils.getParentElement(element, { nodeName: ELEMENTS_THAT_CONTAIN_LI });
+      var list = dom.getParentElement(element, { nodeName: ELEMENTS_THAT_CONTAIN_LI });
       if (!list) {
         return;
       }
@@ -67,12 +68,12 @@
     };
 
     return function(contentEditableElement) {
-      wysihtml5.utils.observe(contentEditableElement, "keydown", function(event) {
-        if (event.keyCode != 8) { // 8 = backspace
+      dom.observe(contentEditableElement, "keydown", function(event) {
+        if (event.keyCode !== wysihtml5.BACKSPACE_KEY) {
           return;
         }
 
-        var element = wysihtml5.utils.caret.getSelectedNode(contentEditableElement.ownerDocument);
+        var element = wysihtml5.selection.getSelectedNode(contentEditableElement.ownerDocument);
         clearIfNecessary(element, contentEditableElement);
       });
     };

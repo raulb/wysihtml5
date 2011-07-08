@@ -1,6 +1,7 @@
 (function(wysihtml5) {
   var undef,
-      NODE_NAME = "A";
+      NODE_NAME = "A",
+      dom       = wysihtml5.dom;
   
   function _removeFormat(element, anchors) {
     var length = anchors.length,
@@ -10,16 +11,16 @@
         textContent;
     for (; i<length; i++) {
       anchor      = anchors[i];
-      codeElement = wysihtml5.utils.getParentElement(anchor, { nodeName: "code" });
-      textContent = wysihtml5.utils.getTextContent(anchor);
+      codeElement = dom.getParentElement(anchor, { nodeName: "code" });
+      textContent = dom.getTextContent(anchor);
 
       // if <a> contains url-like text content, rename it to <code> to prevent re-autolinking
       // else replace <a> with its childNodes
-      if (textContent.match(wysihtml5.utils.autoLink.URL_REG_EXP) && !codeElement) {
+      if (textContent.match(dom.autoLink.URL_REG_EXP) && !codeElement) {
         // <code> element is used to prevent later auto-linking of the content
-        codeElement = wysihtml5.utils.renameElement(anchor, "code");
+        codeElement = dom.renameElement(anchor, "code");
       } else {
-        wysihtml5.utils.unwrap(anchor);
+        dom.replaceWithChildNodes(anchor);
       }
     }
   }
@@ -51,23 +52,23 @@
 
     elementToSetCaretAfter = anchor;
     if (length === 1) {
-      textContent = wysihtml5.utils.getTextContent(anchor);
+      textContent = dom.getTextContent(anchor);
       hasElementChild = !!anchor.querySelector("*");
       isEmpty = textContent === "" || textContent === wysihtml5.INVISIBLE_SPACE;
       if (!hasElementChild && isEmpty) {
-        wysihtml5.utils.setTextContent(anchor, anchor.href);
+        dom.setTextContent(anchor, anchor.href);
         whiteSpace = doc.createTextNode(" ");
-        wysihtml5.utils.caret.setAfter(anchor);
-        wysihtml5.utils.caret.insertNode(whiteSpace);
+        wysihtml5.selection.setAfter(anchor);
+        wysihtml5.selection.insertNode(whiteSpace);
         elementToSetCaretAfter = whiteSpace;
       }
     }
-    wysihtml5.utils.caret.setAfter(elementToSetCaretAfter);
+    wysihtml5.selection.setAfter(elementToSetCaretAfter);
   }
   
   wysihtml5.commands.createLink = {
     /**
-     * TODO: Use cssapplier or formatInline here
+     * TODO: Use HTMLApplier or formatInline here
      *
      * Turns selection into a link
      * If selection is already a link, it removes the link and wraps it with a <code> element
@@ -85,7 +86,7 @@
 
       if (anchors) {
         // Selection contains links
-        wysihtml5.utils.caret.executeAndRestore(doc, function() {
+        wysihtml5.selection.executeAndRestore(doc, function() {
           _removeFormat(element, anchors);
         });
       } else {

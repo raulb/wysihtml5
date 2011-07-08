@@ -304,6 +304,15 @@ wysihtml5.browser = (function() {
     supportsSpeechApiOn: function(input) {
       var chromeVersion = userAgent.match(/Chrome\/(\d+)/) || [, 0];
       return chromeVersion[1] >= 11 && ("onwebkitspeechchange" in input || "speech" in input);
+    },
+    
+    /**
+     * IE9 crashes when setting a getter via Object.defineProperty on XMLHttpRequest or XDomainRequest
+     * See https://connect.microsoft.com/ie/feedback/details/650112
+     * or try the POC http://tifftiff.de/ie9_crash/
+     */
+    crashesWhenDefineProperty: function(property) {
+      return isIE && (property === "XMLHttpRequest" || property === "XDomainRequest");
     }
   };
 })();

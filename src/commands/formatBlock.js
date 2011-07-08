@@ -1,5 +1,7 @@
 (function(wysihtml5) {
   var undef,
+      dom                     = wysihtml5.dom,
+      selection               = wysihtml5.selection,
       DEFAULT_NODE_NAME       = "DIV",
       // Following elements are grouped
       // when the caret is within a H1 and the H4 is invoked, the H1 should turn into H4
@@ -27,7 +29,7 @@
    * Check whether given node is a text node and whether it's empty
    */
   function _isBlankTextNode(node) {
-    return node.nodeType === Node.TEXT_NODE && String(node.data).blank();
+    return node.nodeType === wysihtml5.TEXT_NODE && String(node.data).blank();
   }
 
   /**
@@ -104,7 +106,7 @@
       return true;
     }
 
-    if (wysihtml5.dom.getStyle("display").from(element) === "block") {
+    if (dom.getStyle("display").from(element) === "block") {
       return true;
     }
 
@@ -117,13 +119,13 @@
    */
   function _execCommand(doc, command, nodeName, className) {
     if (className) {
-      var eventListener = wysihtml5.utils.observe(doc, "DOMNodeInserted", function(event) {
+      var eventListener = dom.observe(doc, "DOMNodeInserted", function(event) {
         var target = event.target,
             displayStyle;
-        if (target.nodeType !== Node.ELEMENT_NODE) {
+        if (target.nodeType !== wysihtml5.ELEMENT_NODE) {
           return;
         }
-        displayStyle  = wysihtml5.dom.getStyle("display").from(target);
+        displayStyle  = dom.getStyle("display").from(target);
         if (displayStyle.substr(0, 6) !== "inline") {
           // Make sure that only block elements receive the given class
           target.className += " " + className;
@@ -137,15 +139,15 @@
   }
 
   function _selectLineAndWrap(element) {
-    wysihtml5.utils.caret.selectLine(element.ownerDocument);
-    wysihtml5.utils.caret.surround(element);
+    selection.selectLine(element.ownerDocument);
+    selection.surround(element);
     _removeLineBreakBeforeAndAfter(element);
     _removeLastChildIfLineBreak(element);
-    wysihtml5.utils.caret.selectNode(element);
+    selection.selectNode(element);
   }
 
   function _hasClasses(element) {
-    return !!wysihtml5.utils.trim(element.className);
+    return !!wysihtml5.lang.string(element.className).trim();
   }
   
   return {
@@ -157,7 +159,7 @@
       nodeName = typeof(nodeName) === "string" ? nodeName.toUpperCase() : nodeName;
 
       if (blockElement) {
-        wysihtml5.utils.caret.executeAndRestoreSimple(doc, function() {
+        selection.executeAndRestoreSimple(doc, function() {
           if (classRegExp) {
             _removeClass(blockElement, classRegExp);
           }
@@ -166,27 +168,27 @@
             // Insert a line break afterwards and beforewards when there are siblings
             // that are not of type line break or block element
             _addLineBreakBeforeAndAfter(blockElement);
-            wysihtml5.utils.unwrap(blockElement);
+            dom.replaceWithChildNodes(blockElement);
           } else if (hasClasses) {
             // Make sure that styling is kept by renaming the element to <div> and copying over the class name
-            wysihtml5.utils.renameElement(blockElement, DEFAULT_NODE_NAME);
+            dom.renameElement(blockElement, DEFAULT_NODE_NAME);
           }
         });
         return;
       }
 
       // Find similiar block element and rename it (<h2 class="foo"></h2>  =>  <h1 class="foo"></h1>)
-      if (nodeName === null || wysihtml5.utils.array(BLOCK_ELEMENTS_GROUP).contains(nodeName)) {
-        selectedNode = wysihtml5.utils.caret.getSelectedNode(doc);
-        blockElement = wysihtml5.utils.getParentElement(selectedNode, {
+      if (nodeName === null || wysihtml5.lang.array(BLOCK_ELEMENTS_GROUP).contains(nodeName)) {
+        selectedNode = selection.getSelectedNode(doc);
+        blockElement = dom.getParentElement(selectedNode, {
           nodeName:     BLOCK_ELEMENTS_GROUP
         });
 
         if (blockElement) {
-          wysihtml5.utils.caret.executeAndRestoreSimple(doc, function() {
+          selection.executeAndRestoreSimple(doc, function() {
             // Rename current block element to new block element and add class
             if (nodeName) {
-              blockElement = wysihtml5.utils.renameElement(blockElement, nodeName);
+              blockElement = dom.renameElement(blockElement, nodeName);
             }
             if (className) {
               _addClass(blockElement, className, classRegExp);
@@ -210,8 +212,8 @@
 
     state: function(element, command, nodeName, className, classRegExp) {
       nodeName = typeof(nodeName) === "string" ? nodeName.toUpperCase() : nodeName;
-      var selectedNode = wysihtml5.utils.caret.getSelectedNode(element.ownerDocument);
-      return wysihtml5.utils.getParentElement(selectedNode, {
+      var selectedNode = selection.getSelectedNode(element.ownerDocument);
+      return dom.getParentElement(selectedNode, {
         nodeName:     nodeName,
         className:    className,
         classRegExp:  classRegExp

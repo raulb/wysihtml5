@@ -40,7 +40,7 @@
         "b":      "strong",
         "i":      "em"
       },
-      cssClassApplier = {};
+      htmlApplier = {};
   
   function _getTagNames(tagName) {
     var alias = ALIAS_MAPPING[tagName];
@@ -49,20 +49,20 @@
   
   function _getApplier(tagName, className, classRegExp) {
     var identifier = tagName + ":" + className;
-    if (!cssClassApplier[identifier]) {
-      cssClassApplier[identifier] = rangy.createCssClassApplier(_getTagNames(tagName), className, classRegExp, true);
+    if (!htmlApplier[identifier]) {
+      htmlApplier[identifier] = new wysihtml5.selection.HTMLApplier(_getTagNames(tagName), className, classRegExp, true);
     }
-    return cssClassApplier[identifier];
+    return htmlApplier[identifier];
   }
   
   return {
     exec: function(element, command, tagName, className, classRegExp) {
-      var range = wysihtml5.utils.caret.getRange(element.ownerDocument);
+      var range = wysihtml5.selection.getRange(element.ownerDocument);
       if (!range) {
         return false;
       }
       _getApplier(tagName, className, classRegExp).toggleRange(range);
-      wysihtml5.utils.caret.setSelection(range);
+      wysihtml5.selection.setSelection(range);
     },
 
     state: function(element, command, tagName, className, classRegExp) {
@@ -71,17 +71,17 @@
           range;
 
       // Check whether the document contains a node with the desired tagName
-      if (!wysihtml5.utils.hasElementWithTagName(doc, tagName) &&
-          !wysihtml5.utils.hasElementWithTagName(doc, aliasTagName)) {
+      if (!wysihtml5.dom.hasElementWithTagName(doc, tagName) &&
+          !wysihtml5.dom.hasElementWithTagName(doc, aliasTagName)) {
         return false;
       }
 
        // Check whether the document contains a node with the desired className
-      if (className && !wysihtml5.utils.hasElementWithClassName(doc, className)) {
+      if (className && !wysihtml5.dom.hasElementWithClassName(doc, className)) {
          return false;
       }
 
-      range = wysihtml5.utils.caret.getRange(doc);
+      range = wysihtml5.selection.getRange(doc);
       if (!range) {
         return false;
       }

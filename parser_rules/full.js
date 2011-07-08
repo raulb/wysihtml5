@@ -88,7 +88,7 @@ var wysihtml5ParserRules = {
      * Following options are available:
      *
      *    - add_class:        converts and deletes the given HTML4 attribute (align, clear, ...) via the given method to a css class
-     *                        The following methods are implemented in wysihtml5.utils.sanitizeHTML:
+     *                        The following methods are implemented in wysihtml5.dom.parse:
      *                          - align_text:  converts align attribute values (right/left/center/justify) to their corresponding css class "wysiwyg-text-align-*")
                                   <p align="center">foo</p> ... becomes ... <p> class="wysiwyg-text-align-center">foo</p>
      *                          - clear_br:    converts clear attribute values left/right/all/both to their corresponding css class "wysiwyg-clear-*"

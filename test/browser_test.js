@@ -69,7 +69,7 @@ test("Check IE support", function() {
 
 
 test("Check placeholder support", function() {
-  var pseudoElement = new Element("div");
+  var pseudoElement = document.createElement("div");
   pseudoElement.placeholder = "";
   ok(wysihtml5.browser.supportsPlaceholderAttributeOn(pseudoElement));
 });

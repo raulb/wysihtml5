@@ -12,35 +12,35 @@
       if (wysihtml5.commands.support(element, command)) {
         doc.execCommand(command, false, null);
       } else {
-        selectedNode = wysihtml5.utils.caret.getSelectedNode(doc);
-        list = wysihtml5.utils.getParentElement(selectedNode, { nodeName: ["UL", "OL"] }, 4);
+        selectedNode = wysihtml5.selection.getSelectedNode(doc);
+        list = wysihtml5.dom.getParentElement(selectedNode, { nodeName: ["UL", "OL"] }, 4);
         if (!list) {
           tempElement = doc.createElement("span");
-          wysihtml5.utils.caret.surround(tempElement);
+          wysihtml5.selection.surround(tempElement);
           isEmpty = tempElement.innerHTML === "" || tempElement.innerHTML === wysihtml5.INVISIBLE_SPACE;
-          wysihtml5.utils.caret.executeAndRestoreSimple(doc, function() {
-            list = wysihtml5.utils.convertIntoList(tempElement, "ol");
+          wysihtml5.selection.executeAndRestoreSimple(doc, function() {
+            list = wysihtml5.dom.convertToList(tempElement, "ol");
           });
 
           if (isEmpty) {
-            wysihtml5.utils.caret.selectNode(list.querySelector("li"));
+            wysihtml5.selection.selectNode(list.querySelector("li"));
           }
           return;
         }
 
-        wysihtml5.utils.caret.executeAndRestoreSimple(doc, function() {
+        wysihtml5.selection.executeAndRestoreSimple(doc, function() {
           if (list.nodeName === "OL") {
             // Unwrap list
             // <ol><li>foo</li><li>bar</li></ol>
             // becomes:
             // foo<br>bar<br>
-            wysihtml5.utils.resolveList(list);
+            wysihtml5.dom.resolveList(list);
           } else if (list.nodeName === "UL" || list.nodeName === "MENU") {
             // Turn an unordered list into an ordered list
             // <ul><li>foo</li><li>bar</li></ul>
             // becomes:
             // <ol><li>foo</li><li>bar</li></ol>
-            wysihtml5.utils.renameElement(list, "ol");
+            wysihtml5.dom.renameElement(list, "ol");
           }
         });
       }

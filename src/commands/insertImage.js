@@ -22,14 +22,14 @@
 
       if (image) {
         // Image already selected, set the caret before it and delete it
-        wysihtml5.utils.caret.setBefore(image);
+        wysihtml5.selection.setBefore(image);
         parent = image.parentNode;
         parent.removeChild(image);
 
         // and it's parent <a> too if it hasn't got any other relevant child nodes
-        wysihtml5.utils.removeEmptyTextNodes(parent);
+        wysihtml5.dom.removeEmptyTextNodes(parent);
         if (parent.nodeName === "A" && !parent.firstChild) {
-          wysihtml5.utils.caret.setAfter(parent);
+          wysihtml5.selection.setAfter(parent);
           parent.parentNode.removeChild(parent);
         }
 
@@ -44,8 +44,8 @@
         image[i] = value[i];
       }
 
-      wysihtml5.utils.caret.insertNode(image);
-      wysihtml5.utils.caret.setAfter(image);
+      wysihtml5.selection.insertNode(image);
+      wysihtml5.selection.setAfter(image);
     },
 
     state: function(element) {
@@ -54,11 +54,11 @@
           text,
           imagesInSelection;
 
-      if (!wysihtml5.utils.hasElementWithTagName(doc, NODE_NAME)) {
+      if (!wysihtml5.dom.hasElementWithTagName(doc, NODE_NAME)) {
         return false;
       }
 
-      selectedNode = wysihtml5.utils.caret.getSelectedNode(doc);
+      selectedNode = wysihtml5.selection.getSelectedNode(doc);
       if (!selectedNode) {
         return false;
       }
@@ -68,17 +68,17 @@
         return selectedNode;
       }
 
-      if (selectedNode.nodeType !== Node.ELEMENT_NODE) {
+      if (selectedNode.nodeType !== wysihtml5.ELEMENT_NODE) {
         return false;
       }
 
-      text = wysihtml5.utils.caret.getText(doc);
-      text = wysihtml5.utils.trim(text);
+      text = wysihtml5.selection.getText(doc);
+      text = wysihtml5.lang.string(text).trim();
       if (text) {
         return false;
       }
 
-      imagesInSelection = wysihtml5.utils.caret.getNodes(doc, Node.ELEMENT_NODE, function(node) {
+      imagesInSelection = wysihtml5.selection.getNodes(doc, wysihtml5.ELEMENT_NODE, function(node) {
         return node.nodeName === "IMG";
       });
 

@@ -1,21 +1,23 @@
 (function(wysihtml5) {
-  "use strict";
+  var dom       = wysihtml5.dom,
+      browser   = wysihtml5.browser,
+      selection = wysihtml5.selection;
   
-  wysihtml5.views.Composer = Class.create(wysihtml5.views.View, 
+  wysihtml5.views.Composer = wysihtml5.views.View.extend(
     /** @scope wysihtml5.views.Composer.prototype */ {
     name: "composer",
 
     // Needed for firefox in order to display a proper caret in an empty contentEditable
     CARET_HACK: "<br>",
 
-    initialize: function($super, parent, textareaElement, config) {
-      $super(parent, textareaElement, config);
+    constructor: function(parent, textareaElement, config) {
+      this.base(parent, textareaElement, config);
       this.textarea = this.parent.textarea;
       this._initSandbox();
     },
 
     clear: function() {
-      this.element.innerHTML = wysihtml5.browser.displaysCaretInEmptyContentEditableCorrectly() ? "" : this.CARET_HACK;
+      this.element.innerHTML = browser.displaysCaretInEmptyContentEditableCorrectly() ? "" : this.CARET_HACK;
     },
 
     getValue: function(parse) {
@@ -29,7 +31,7 @@
       // Also remove all CARET hacks that somehow got left
       value = value
         .replace(new RegExp(wysihtml5.INVISIBLE_SPACE, "g"), "")
-        .replace(new RegExp(RegExp.escape(wysihtml5.utils.caret.PLACEHOLDER_TEXT), "g"), "");
+        .replace(new RegExp(selection.PLACEHOLDER_TEXT, "g"), "");
 
       return value;
     },
@@ -50,29 +52,29 @@
     },
 
     hide: function() {
-      this._displayStyle = wysihtml5.dom.getStyle("display").from(this.iframe);
+      this._displayStyle = dom.getStyle("display").from(this.iframe);
       if (this._displayStyle === "none") {
         this._displayStyle = null;
       }
-      this.iframe.hide();
+      this.iframe.style.display = "none";
     },
 
-    disable: function($super) {
+    disable: function() {
       this.element.removeAttribute("contentEditable");
-      $super();
+      this.base();
     },
 
-    enable: function($super) {
+    enable: function() {
       this.element.setAttribute("contentEditable", "true");
-      $super();
+      this.base();
     },
 
     getTextContent: function() {
-      return wysihtml5.utils.getTextContent(this.element);
+      return dom.getTextContent(this.element);
     },
 
     hasPlaceholderSet: function() {
-      return this.getTextContent() == this.textarea.element.readAttribute("placeholder");
+      return this.getTextContent() == this.textarea.element.getAttribute("placeholder");
     },
 
     isEmpty: function() {
@@ -85,7 +87,11 @@
     },
 
     _initSandbox: function() {
-      this.sandbox = new wysihtml5.utils.Sandbox(this._create.bind(this), {
+      var that = this;
+      
+      this.sandbox = new dom.Sandbox(function() {
+        that._create();
+      }, {
         stylesheets:  this.config.stylesheets,
         uaCompatible: "IE=7"
       });
@@ -99,11 +105,13 @@
 
       // Store reference to current wysihtml5 instance on the textarea element
       var textareaElement = this.textarea.element;
-      wysihtml5.dom.insert(this.iframe).after(textareaElement);
-      wysihtml5.dom.insert(hiddenField).after(textareaElement);
+      dom.insert(this.iframe).after(textareaElement);
+      dom.insert(hiddenField).after(textareaElement);
     },
 
     _create: function() {
+      var that = this;
+      
       this.element            = this.sandbox.getDocument().body;
       this.textarea           = this.parent.textarea;
       this.element.innerHTML  = this.textarea.getValue(true);
@@ -112,11 +120,11 @@
       // Make sure that our external range library is initialized
       window.rangy.init();
 
-      wysihtml5.utils.copyAttributes(
+      dom.copyAttributes([
         "className", "spellcheck", "title", "lang", "dir", "accessKey"
-      ).from(this.textarea.element).to(this.element);
-
-      Element.addClassName(this.element, this.config.composerClassName);
+      ]).from(this.textarea.element).to(this.element);
+      
+      dom.addClass(this.config.composerClassName).to(this.element);
 
       // Make the editor look like the original textarea, by syncing styles
       if (this.config.style) {
@@ -127,8 +135,8 @@
 
       var name = this.config.name;
       if (name) {
-        Element.addClassName(this.element, name);
-        Element.addClassName(this.iframe, name);
+        dom.addClass(this.element, name);
+        dom.addClass(this.iframe, name);
       }
 
       // Simulate html5 placeholder attribute on contentEditable element
@@ -136,7 +144,7 @@
         ? this.config.placeholder
         : this.textarea.element.getAttribute("placeholder");
       if (placeholderText) {
-        wysihtml5.utils.simulatePlaceholder(this.parent, this, placeholderText);
+        dom.simulatePlaceholder(this.parent, this, placeholderText);
       }
 
       // Make sure that the browser avoids using inline styles whenever possible
@@ -147,20 +155,20 @@
 
       // Simulate html5 autofocus on contentEditable element
       if (this.textarea.element.hasAttribute("autofocus") || document.querySelector(":focus") == this.textarea.element) {
-        wysihtml5.utils.autoFocus(this);
+        setTimeout(function() { that.composer.focus(); }, 100);
       }
 
       // IE and Opera insert paragraphs on return instead of line breaks
-      if (!wysihtml5.browser.insertsLineBreaksOnReturn()) {
+      if (!browser.insertsLineBreaksOnReturn()) {
         wysihtml5.quirks.insertLineBreakOnReturn(this.element);
       }
 
       // IE sometimes leaves a single paragraph, which can't be removed by the user
-      if (!wysihtml5.browser.clearsContentEditableCorrectly()) {
+      if (!browser.clearsContentEditableCorrectly()) {
         wysihtml5.quirks.ensureProperClearing(this.element);
       }
 
-      if (!wysihtml5.browser.clearsListsInContentEditableCorrectly()) {
+      if (!browser.clearsListsInContentEditableCorrectly()) {
         wysihtml5.quirks.ensureProperClearingOfLists(this.element);
       }
 
@@ -170,15 +178,15 @@
       }
 
       // Okay hide the textarea, we are ready to go
-      this.textarea.hide();
+      this.textarea.style.display = "none";
 
       // Fire global (before-)load event
       this.parent.fire("beforeload").fire("load");
     },
 
     _initAutoLinking: function() {
-      var supportsDisablingOfAutoLinking = wysihtml5.browser.canDisableAutoLinking(),
-          supportsAutoLinking            = wysihtml5.browser.doesAutoLinkingInContentEditable();
+      var supportsDisablingOfAutoLinking = browser.canDisableAutoLinking(),
+          supportsAutoLinking            = browser.doesAutoLinkingInContentEditable();
       if (supportsDisablingOfAutoLinking) {
         wysihtml5.commands.exec(this.element, "autoUrlDetect", false);
       }
@@ -193,10 +201,10 @@
       // OR when he supports auto linking but we were able to turn it off (IE9+)
       if (!supportsAutoLinking || (supportsAutoLinking && supportsDisablingOfAutoLinking)) {
         this.parent.observe("newword:composer", function() {
-          wysihtml5.utils.caret.executeAndRestore(sandboxDoc, function(startContainer, endContainer) {
-            wysihtml5.utils.autoLink(endContainer.parentNode);
+          selection.executeAndRestore(sandboxDoc, function(startContainer, endContainer) {
+            dom.autoLink(endContainer.parentNode);
           });
-        }.bind(this));
+        });
       }
 
       // Assuming we have the following:
@@ -206,22 +214,22 @@
       var // Use a live NodeList to check whether there are any links in the document
           links           = sandboxDoc.getElementsByTagName("a"),
           // The autoLink helper method reveals a reg exp to detect correct urls
-          urlRegExp       = wysihtml5.utils.autoLink.URL_REG_EXP,
+          urlRegExp       = dom.autoLink.URL_REG_EXP,
           getTextContent  = function(element) {
-            var textContent = wysihtml5.utils.getTextContent(element).strip();
+            var textContent = dom.getTextContent(element).strip();
             if (textContent.substr(0, 4) === "www.") {
               textContent = "http://" + textContent;
             }
             return textContent;
           };
 
-      wysihtml5.utils.observe(this.element, "keydown", function(event) {
+      dom.observe(this.element, "keydown", function(event) {
         if (!links.length) {
           return;
         }
 
-        var selectedNode = wysihtml5.utils.caret.getSelectedNode(event.target.ownerDocument),
-            link         = wysihtml5.utils.getParentElement(selectedNode, { nodeName: "A" }, 4),
+        var selectedNode = selection.getSelectedNode(event.target.ownerDocument),
+            link         = dom.getParentElement(selectedNode, { nodeName: "A" }, 4),
             textContent;
 
         if (!link) {
@@ -246,27 +254,36 @@
     },
 
     _initObjectResizing: function() {
-      wysihtml5.commands.exec(this.element, "enableObjectResizing", this.config.allowObjectResizing);
+      var properties        = ["width", "height"],
+          propertiesLength  = properties.length,
+          element           = this.element;
+      
+      wysihtml5.commands.exec(element, "enableObjectResizing", this.config.allowObjectResizing);
 
       if (this.config.allowObjectResizing) {
-        if (wysihtml5.browser.supportsEvent("resizeend")) {
-          wysihtml5.utils.observe(this.element, "resizeend", function(event) {
-            var target      = event.target || event.srcElement;
-            ["width", "height"].each(function(property) {
-              if (target.style[property]) {
-                target.setAttribute(property, parseInt(target.style[property], 10));
-                target.style[property] = "";
+         // IE sets inline styles after resizing objects
+         // The following lines make sure that the width/height css properties
+         // are copied over to the width/height attributes
+        if (browser.supportsEvent("resizeend")) {
+          dom.observe(element, "resizeend", function(event) {
+            var target = event.target || event.srcElement,
+                style  = target.style,
+                i      = 0,
+                attribute;
+            for(; i<propertiesLength; i++) {
+              property = properties[i];
+              if (style[property]) {
+                target.setAttribute(attribute, parseInt(style[property], 10));
+                style[property] = "";
               }
-            });
+            }
             // After resizing IE sometimes forgets to remove the old resize handles
-            wysihtml5.quirks.redraw(this.element);
-          }.bind(this));
+            wysihtml5.quirks.redraw(element);
+          });
         }
       } else {
-        if (wysihtml5.browser.supportsEvent("resizestart")) {
-          wysihtml5.utils.observe(this.element, "resizestart", function(event) {
-            event.preventDefault();
-          });
+        if (browser.supportsEvent("resizestart")) {
+          dom.observe(element, "resizestart", function(event) { event.preventDefault(); });
         }
       }
     }

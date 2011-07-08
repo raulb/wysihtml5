@@ -3,47 +3,48 @@ VERSION = $(shell cat version.txt)
 JS_OUTPUT = "dist/wysihtml5-${VERSION}.js"
 
 JS_FILES = lib/rangy/rangy-core.js \
-  lib/rangy/rangy-cssclassapplier-wysihtml5.js \
   src/wysihtml5.js \
   src/browser.js \
-  src/dom/class.js \
-  src/dom/get_style.js \
-  src/dom/insert.js \
-  src/dom/set_attributes.js \
-  src/dom/set_styles.js \
   src/utils/array.js \
   src/utils/dispatcher.js \
-  src/utils/auto_focus.js \
-  src/utils/auto_link.js \
-  src/utils/caret.js \
-  src/utils/contains.js \
-  src/utils/convert_into_list.js \
-  src/utils/copy_styles.js \
-  src/utils/copy_attributes.js \
-  src/utils/get_in_dom_element.js \
-  src/utils/get_parent_element.js \
-  src/utils/has_element_with_tag_name.js \
-  src/utils/has_element_with_class_name.js \
-  src/utils/insert_rules.js \
-  src/utils/observe.js \
-  src/utils/resolve_list.js \
-  src/utils/rename_element.js \
-  src/utils/remove_empty_text_nodes.js \
-  src/utils/sandbox.js \
-  src/utils/sanitize_html.js \
-  src/utils/simulate_placeholder.js \
-  src/utils/synchronizer.js \
-  src/utils/text_content.js \
-  src/utils/trim.js \
-  src/utils/unwrap.js \
+  src/utils/object.js \
+  src/utils/string.js \
+  src/dom/auto_link.js \
+  src/dom/class.js \
+  src/dom/contains.js \
+  src/dom/convert_to_list.js \
+  src/dom/copy_attributes.js \
+  src/dom/copy_styles.js \
+  src/dom/delegate.js \
+  src/dom/get_as_dom.js \
+  src/dom/get_parent_element.js \
+  src/dom/get_style.js \
+  src/dom/has_element_with_tag_name.js \
+  src/dom/has_element_with_class_name.js \
+  src/dom/insert.js \
+  src/dom/insert_css.js \
+  src/dom/observe.js \
+  src/dom/parse.js \
+  src/dom/remove_empty_text_nodes.js \
+  src/dom/rename_element.js \
+  src/dom/replace_with_child_nodes.js \
+  src/dom/resolve_list.js \
+  src/dom/sandbox.js \
+  src/dom/set_attributes.js \
+  src/dom/set_styles.js \
+  src/dom/simulate_placeholder.js \
+  src/dom/text_content.js \
   src/quirks/clean_pasted_html.js \
   src/quirks/ensure_proper_clearing.js \
   src/quirks/insert_line_break_on_return.js \
   src/quirks/redraw.js \
+  src/selection/selection.js \
+  src/selection/html_applier.js \
   src/views/view.js \
   src/views/composer.js \
   src/views/composer.style.js \
   src/views/composer.observe.js \
+  src/views/synchronizer.js \
   src/views/textarea.js \
   src/toolbar/dialog.js \
   src/toolbar/speech.js \

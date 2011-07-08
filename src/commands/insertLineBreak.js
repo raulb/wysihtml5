@@ -6,7 +6,7 @@
       if (wysihtml5.commands.support(element, command)) {
         element.ownerDocument.execCommand(command, false, null);
         if (!wysihtml5.browser.autoScrollsToCaret()) {
-          wysihtml5.utils.caret.scrollIntoView(element);
+          wysihtml5.selection.scrollIntoView(element);
         }
       } else {
         wysihtml5.commands.exec(element, "insertHTML", LINE_BREAK);

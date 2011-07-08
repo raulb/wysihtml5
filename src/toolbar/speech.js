@@ -57,7 +57,7 @@
     
     var wrapper = document.createElement("div");
     
-    Object.extend(wrapperStyle, {
+    wysihtml5.lang.object(wrapperStyle).merge({
       width:  link.offsetWidth  + "px",
       height: link.offsetHeight + "px"
     });
@@ -72,12 +72,12 @@
     dom.setStyles(linkStyles).on(link);
     
     var eventName = "onwebkitspeechchange" in input ? "webkitspeechchange" : "speechchange";
-    input.on(eventName, function() {
+    dom.observe(input, eventName, function() {
       parent.execCommand("insertText", input.value);
       input.value = "";
     });
     
-    wrapper.on("click", function(event) {
+    dom.observe("click", function(event) {
       if (dom.hasClass(link, "wysihtml5-command-disabled")) {
         event.preventDefault();
       }

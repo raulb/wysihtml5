@@ -6,7 +6,7 @@
     if (supportsClassList) {
       return element.classList.add(className);
     }
-    if (wysihtml5.dom.hasClass(element, className)) {
+    if (api.hasClass(element, className)) {
       return;
     }
     element.className += " " + className;

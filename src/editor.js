@@ -25,8 +25,6 @@
  *    change_view
  */
 (function(wysihtml5) {
-  "use strict";
-  
   var undef;
   
   var defaultConfig = {
@@ -42,7 +40,7 @@
     // See parser_rules/*.js for examples
     parserRules:          { tags: { br: {}, span: {}, div: {}, p: {} }, classes: {} },
     // Parser method to use when the user inserts content via copy & paste
-    parser:               wysihtml5.utils.sanitizeHTML,
+    parser:               wysihtml5.dom.parse,
     // Class name which should be set on the contentEditable element in the created sandbox iframe, can be styled via the 'stylesheets' option
     composerClassName:    "wysihtml5-editor",
     // Class name to add to the body when the wysihtml5 editor is supported
@@ -55,11 +53,11 @@
     allowObjectResizing:  true
   };
   
-  wysihtml5.Editor = Class.create(wysihtml5.utils.Dispatcher, 
+  wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend({
     /** @scope wysihtml5.Editor.prototype */ {
-    initialize: function(textareaElement, config) {
+    constructor: function(textareaElement, config) {
       this.textareaElement  = typeof(textareaElement) === "string" ? document.getElementById(textareaElement) : textareaElement;
-      this.config           = Object.extend(Object.clone(defaultConfig), config);
+      this.config           = wysihtml5.lang.object({}).merge(defaultConfig).merge(config).get();
       this.textarea         = new wysihtml5.views.Textarea(this, this.textareaElement, this.config);
       this.currentView      = this.textarea;
       this._isCompatible    = wysihtml5.browser.supported();
@@ -82,7 +80,7 @@
       }
       
       this.observe("beforeload", function() {
-        this.synchronizer = new wysihtml5.utils.Synchronizer(this, this.textarea, this.composer);
+        this.synchronizer = new wysihtml5.views.Synchronizer(this, this.textarea, this.composer);
         if (this.config.toolbar) {
           this.toolbar = new wysihtml5.toolbar.Toolbar(this, this.config.toolbar);
         }
@@ -159,7 +157,7 @@
       this.observe("paste:composer", function() {
         var keepScrollPosition  = true,
             that                = this;
-        wysihtml5.utils.caret.executeAndRestore(this.composer.sandbox.getDocument(), function() {
+        wysihtml5.selection.executeAndRestore(this.composer.sandbox.getDocument(), function() {
           wysihtml5.quirks.cleanPastedHTML(that.composer.element);
           that.parse(that.composer.element);
         }, keepScrollPosition);

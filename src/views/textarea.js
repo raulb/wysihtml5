@@ -1,9 +1,9 @@
-wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
+wysihtml5.views.Textarea = wysihtml5.views.View.extend(
   /** @scope wysihtml5.views.Textarea.prototype */ {
   name: "textarea",
   
-  initialize: function($super, parent, textareaElement, config) {
-    $super(parent, textareaElement, config);
+  constructor: function(parent, textareaElement, config) {
+    this.base(parent, textareaElement, config);
     
     this._observe();
   },
@@ -53,12 +53,12 @@ wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
         events = wysihtml5.browser.supportsEvent("focusin") ? ["focusin", "focusout", "change"] : ["focus", "blur", "change"];
     
     parent.observe("beforeload", function() {
-      wysihtml5.utils.observe(element, events, function(event) {
+      wysihtml5.dom.observe(element, events, function(event) {
         var eventName = eventMapping[event.type] || event.type;
         parent.fire(eventName).fire(eventName + ":textarea");
       });
       
-      wysihtml5.utils.observe(element, ["paste", "drop"], function() {
+      wysihtml5.dom.observe(element, ["paste", "drop"], function() {
         setTimeout(function() { parent.fire("paste").fire("paste:textarea"); }, 0);
       });
     });

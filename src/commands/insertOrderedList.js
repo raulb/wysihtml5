@@ -1,7 +1,7 @@
 (function(wysihtml5) {
   var undef;
   
-  return {
+  wysihtml5.commands.insertOrderedList = {
     exec: function(element, command) {
       var doc = element.ownerDocument,
           selectedNode,

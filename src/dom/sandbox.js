@@ -208,15 +208,20 @@
     },
 
     _getHtml: function(templateVars) {
-      if (templateVars.stylesheets) {
-        templateVars.stylesheets = [templateVars.stylesheets].flatten().map(function(stylesheet) {
-          return '<link rel="stylesheet" href="' + stylesheet + '">';
-        }).join("");
-      } else {
-        templateVars.stylesheets = "";
+      var stylesheets = templateVars.stylesheets,
+          html        = "",
+          i           = 0,
+          length;
+      stylesheets = typeof(stylesheets) === "string" ? [stylesheets] : stylesheets;
+      if (stylesheets) {
+        length = stylesheets.length;
+        for (; i<length; i++) {
+          html += '<link rel="stylesheet" href="' + stylesheets[i] + '">';
+        }
       }
+      templateVars.stylesheets = html;
 
-      return (
+      return wysihtml5.lang.string(
         '<!DOCTYPE html><html><head>'
         + '<meta http-equiv="X-UA-Compatible" content="#{uaCompatible}"><meta charset="#{charset}">#{stylesheets}</head>'
         + '<body></body></html>'

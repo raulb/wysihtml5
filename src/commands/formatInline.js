@@ -55,7 +55,7 @@
     return htmlApplier[identifier];
   }
   
-  return {
+  wysihtml5.commands.formatInline = {
     exec: function(element, command, tagName, className, classRegExp) {
       var range = wysihtml5.selection.getRange(element.ownerDocument);
       if (!range) {

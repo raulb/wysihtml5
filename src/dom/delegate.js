@@ -5,7 +5,7 @@
       var target    = event.target,
           match     = wysihtml5.lang.array(container.querySelectorAll(selector));
       
-      while (match.length && target && target !== container) {
+      while (target && target !== container) {
         if (match.contains(target)) {
           handler.call(target, event);
           break;

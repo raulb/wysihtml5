@@ -25,8 +25,8 @@
     /** @scope wysihtml5.toolbar.Toolbar.prototype */ {
     constructor: function(editor, container) {
       this.editor     = editor;
-      this.container  = container;
-      this.composer   = parent.composer;
+      this.container  = typeof(container) === "string" ? document.getElementById(container) : container;
+      this.composer   = editor.composer;
 
       this._getLinks("command");
       this._getLinks("action");
@@ -34,7 +34,7 @@
       this._observe();
       this.show();
       
-      var speechInputLinks  = container.querySelectorAll("[data-wysihtml5-command=insertSpeech]"),
+      var speechInputLinks  = this.container.querySelectorAll("[data-wysihtml5-command=insertSpeech]"),
           length            = speechInputLinks.length,
           i                 = 0;
       for (; i<length; i++) {
@@ -43,7 +43,7 @@
     },
 
     _getLinks: function(type) {
-      var links   = this[type + "Links"] = this.container.querySelectorAll("a[data-wysihtml5-" + type + "]"),
+      var links   = this[type + "Links"] = wysihtml5.lang.array(this.container.querySelectorAll("a[data-wysihtml5-" + type + "]")).get(),
           length  = links.length,
           i       = 0,
           mapping = this[type + "Mapping"] = {},
@@ -211,7 +211,7 @@
         command = commandMapping[i];
         if (this.commandsDisabled) {
           state = false;
-          dom.addClass(command.link, CLASS_NAME_COMMAND_ACTIVE);
+          dom.removeClass(command.link, CLASS_NAME_COMMAND_ACTIVE);
           if (command.dialog) {
             command.dialog.hide();
           }

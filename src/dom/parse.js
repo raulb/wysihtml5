@@ -76,7 +76,7 @@ wysihtml5.dom.parse = (function() {
    * Iterates over all childs of the element, recreates them, appends them into a document fragment
    * which later replaces the entire body content
    */
-  function sanitizeHTML(elementOrHtml, rules, context, cleanUp) {
+  function parse(elementOrHtml, rules, context, cleanUp) {
     currentRules      = rules;
     context = context || elementOrHtml.ownerDocument || document;
     var fragment      = context.createDocumentFragment(),
@@ -441,5 +441,5 @@ wysihtml5.dom.parse = (function() {
     })()
   };
   
-  return sanitizeHTML;
+  return parse;
 })();

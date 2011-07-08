@@ -97,7 +97,7 @@ wysihtml5.assert.htmlEquals = (function() {
   var removeWhiteSpace = (function() {
     var REG_EXP = /(>)(\s*?)(<)/gm;
     return function(html) {
-      return html.replace(REG_EXP, "$1$3").strip();
+      return wysihtml5.lang.string(html.replace(REG_EXP, "$1$3")).trim();
     };
   })();
   

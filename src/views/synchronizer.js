@@ -59,7 +59,7 @@
     _observe: function() {
       var interval,
           that          = this,
-          form          = this.textarea.element.up("form"),
+          form          = this.textarea.element.form,
           startInterval = function() {
             interval = setInterval(function() { that.fromComposerToTextarea(); }, INTERVAL);
           },

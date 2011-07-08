@@ -2,7 +2,7 @@ wysihtml5.lang.Dispatcher = Base.extend(
   /** @scope wysihtml5.lang.Dialog.prototype */ {
   observe: function(eventName, handler) {
     this.events = this.events || {};
-    this.events[eventName] = [] || this.events[eventName];
+    this.events[eventName] = this.events[eventName] || [];
     this.events[eventName].push(handler);
     return this;
   },

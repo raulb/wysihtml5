@@ -150,7 +150,7 @@
     return !!wysihtml5.lang.string(element.className).trim();
   }
   
-  return {
+  wysihtml5.commands.formatBlock = {
     exec: function(element, command, nodeName, className, classRegExp) {
       var doc          = element.ownerDocument,
           blockElement = this.state(element, command, nodeName, className, classRegExp),

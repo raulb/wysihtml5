@@ -124,7 +124,7 @@
         "className", "spellcheck", "title", "lang", "dir", "accessKey"
       ]).from(this.textarea.element).to(this.element);
       
-      dom.addClass(this.config.composerClassName).to(this.element);
+      dom.addClass(this.element, this.config.composerClassName);
 
       // Make the editor look like the original textarea, by syncing styles
       if (this.config.style) {
@@ -178,7 +178,7 @@
       }
 
       // Okay hide the textarea, we are ready to go
-      this.textarea.style.display = "none";
+      this.textarea.hide();
 
       // Fire global (before-)load event
       this.parent.fire("beforeload").fire("load");
@@ -216,7 +216,7 @@
           // The autoLink helper method reveals a reg exp to detect correct urls
           urlRegExp       = dom.autoLink.URL_REG_EXP,
           getTextContent  = function(element) {
-            var textContent = dom.getTextContent(element).strip();
+            var textContent = wysihtml5.lang.string(dom.getTextContent(element)).trim();
             if (textContent.substr(0, 4) === "www.") {
               textContent = "http://" + textContent;
             }

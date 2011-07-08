@@ -33,12 +33,12 @@
       return element;
     }
 
-    if (element == element.ownerDocument.documentElement) {
+    if (element === element.ownerDocument.documentElement) {
       element = element.ownerDocument.body;
     }
 
     return _parseNode(element);
-  };
+  }
   
   /**
    * This is basically a rebuild of
@@ -55,7 +55,10 @@
         punctuation = "";
       }
       var realUrl    = url,
-          displayUrl = url.truncate(MAX_DISPLAY_LENGTH);
+          displayUrl = url;
+      if (url.length > MAX_DISPLAY_LENGTH) {
+        displayUrl = displayUrl.substr(0, MAX_DISPLAY_LENGTH) + "...";
+      }
       // Add http prefix if necessary
       if (realUrl.substr(0, 4) === "www.") {
         realUrl = "http://" + realUrl;
@@ -103,7 +106,7 @@
       nodeName = node.nodeName;
       if (IGNORE_URLS_IN.contains(nodeName)) {
         return true;
-      } else if (nodeName == "body") {
+      } else if (nodeName === "body") {
         return false;
       }
     }

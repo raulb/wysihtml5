@@ -36,7 +36,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
   },
   
   isEmpty: function() {
-    return !this.element.value.strip() || this.hasPlaceholderSet();
+    return !wysihtml5.lang.string(this.element.value).trim() || this.hasPlaceholderSet();
   },
   
   _observe: function() {

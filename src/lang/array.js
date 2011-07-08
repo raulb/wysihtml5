@@ -30,11 +30,12 @@ wysihtml5.lang.array = function(arr) {
       var newArr  = [],
           i       = 0,
           length  = arr.length;
-      for (; i<lengh; i++) {
+      for (; i<length; i++) {
         if (!arrayToSubstract.contains(arr[i])) {
           newArr.push(arr[i]);
         }
       }
+      return newArr;
     },
     
     /**

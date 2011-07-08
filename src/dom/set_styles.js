@@ -5,6 +5,10 @@ wysihtml5.dom.setStyles = function(styles) {
   };
   return {
     on: function(element) {
+      if (typeof(styles) === "string") {
+        element.style.cssText += ";" + styles;
+        return;
+      }
       for (var i in styles) {
         i = styleMapping[i] || i;
         element.style[i] = styles[i];

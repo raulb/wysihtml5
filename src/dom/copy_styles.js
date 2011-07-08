@@ -30,7 +30,7 @@
   
   var shouldIgnoreBoxSizingBorderBox = function(element) {
     if (hasBoxSizingBorderBox(element)) {
-       return parseInt(api.getStyle("width").from(element), 10) < element.getWidth();
+       return parseInt(api.getStyle("width").from(element), 10) < element.offsetWidth;
     }
     return false;
   };
@@ -49,16 +49,17 @@
     return {
       from: function(element) {
         if (shouldIgnoreBoxSizingBorderBox(element)) {
-          stylesToCopy = stylesToCopy.without.apply(stylesToCopy, BOX_SIZING_PROPERTIES);
+          stylesToCopy = wysihtml5.lang.array(stylesToCopy).without(BOX_SIZING_PROPERTIES);
         }
         
-        var cssText = stylesToCopy.inject("", function(str, property) {
-          var propertyValue = api.getStyle(property).from(element);
-          if (propertyValue) {
-            str += property + ":" + propertyValue + ";";
-          }
-          return str;
-        });
+        var cssText = "",
+            length  = stylesToCopy.length,
+            i       = 0,
+            property;
+        for (; i<length; i++) {
+          property = stylesToCopy[i];
+          cssText += property + ":" + api.getStyle(property).from(element) + ";";
+        }
         
         return {
           to: function(element) {

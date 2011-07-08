@@ -29,7 +29,7 @@ wysihtml5.commands = {
     var obj     = this[command],
         method  = obj && obj.exec;
     if (method) {
-      return method(element, command, value);
+      return method.call(obj, element, command, value);
     } else {
       try {
         // try/catch for buggy firefox
@@ -53,8 +53,7 @@ wysihtml5.commands = {
     var obj     = this[command],
         method  = obj && obj.state;
     if (method) {
-      // TODO: Consider to pass the selectedNode as element instead of the contentEditable
-      return method(element, command, commandValue);
+      return method.call(obj, element, command, commandValue);
     } else {
       try {
         // try/catch for buggy firefox

@@ -7,7 +7,7 @@
  * Inspired by the rangy CSS Applier module written by Tim Down and  licensed under the MIT license.
  * http://code.google.com/p/rangy/
  */
-(function(wysihtml5, rangyDom) {
+(function(wysihtml5, rangy) {
   var defaultTagName = "span";
   
   var REG_EXP_WHITE_SPACE = /\s+/g;
@@ -69,7 +69,7 @@
   }
 
   function isSplitPoint(node, offset) {
-    if (rangyDom.isCharacterDataNode(node)) {
+    if (rangy.dom.isCharacterDataNode(node)) {
       if (offset == 0) {
         return !!node.previousSibling;
       } else if (offset == node.length) {
@@ -84,15 +84,15 @@
 
   function splitNodeAt(node, descendantNode, descendantOffset) {
     var newNode;
-    if (rangyDom.isCharacterDataNode(descendantNode)) {
+    if (rangy.dom.isCharacterDataNode(descendantNode)) {
       if (descendantOffset == 0) {
-        descendantOffset = rangyDom.getNodeIndex(descendantNode);
+        descendantOffset = rangy.dom.getNodeIndex(descendantNode);
         descendantNode = descendantNode.parentNode;
       } else if (descendantOffset == descendantNode.length) {
-        descendantOffset = rangyDom.getNodeIndex(descendantNode) + 1;
+        descendantOffset = rangy.dom.getNodeIndex(descendantNode) + 1;
         descendantNode = descendantNode.parentNode;
       } else {
-        newNode = rangyDom.splitDataNode(descendantNode, descendantOffset);
+        newNode = rangy.dom.splitDataNode(descendantNode, descendantOffset);
       }
     }
     if (!newNode) {
@@ -104,9 +104,9 @@
       while ((child = descendantNode.childNodes[descendantOffset])) {
         newNode.appendChild(child);
       }
-      rangyDom.insertAfter(newNode, descendantNode);
+      rangy.dom.insertAfter(newNode, descendantNode);
     }
-    return (descendantNode == node) ? newNode : splitNodeAt(node, newNode.parentNode, rangyDom.getNodeIndex(newNode));
+    return (descendantNode == node) ? newNode : splitNodeAt(node, newNode.parentNode, rangy.dom.getNodeIndex(newNode));
   }
   
   function Merge(firstNode) {
@@ -163,7 +163,7 @@
       var cssClassMatch;
       while (node) {
         cssClassMatch = this.cssClass ? hasClass(node, this.cssClass, this.similarClassRegExp) : true;
-        if (node.nodeType == wysihtml5.ELEMENT_NODE && rangyDom.arrayContains(this.tagNames, node.tagName.toLowerCase()) && cssClassMatch) {
+        if (node.nodeType == wysihtml5.ELEMENT_NODE && rangy.dom.arrayContains(this.tagNames, node.tagName.toLowerCase()) && cssClassMatch) {
           return node;
         }
         node = node.parentNode;
@@ -247,8 +247,8 @@
     },
     
     areElementsMergeable: function(el1, el2) {
-      return rangyDom.arrayContains(this.tagNames, (el1.tagName || "").toLowerCase())
-        && rangyDom.arrayContains(this.tagNames, (el2.tagName || "").toLowerCase())
+      return rangy.dom.arrayContains(this.tagNames, (el1.tagName || "").toLowerCase())
+        && rangy.dom.arrayContains(this.tagNames, (el2.tagName || "").toLowerCase())
         && hasSameClasses(el1, el2)
         && elementsHaveSameNonClassAttributes(el1, el2);
     },
@@ -263,19 +263,19 @@
 
     applyToTextNode: function(textNode) {
       var parent = textNode.parentNode;
-      if (parent.childNodes.length == 1 && rangyDom.arrayContains(this.tagNames, parent.tagName.toLowerCase())) {
+      if (parent.childNodes.length == 1 && rangy.dom.arrayContains(this.tagNames, parent.tagName.toLowerCase())) {
         if (this.cssClass) {
           addClass(parent, this.cssClass, this.similarClassRegExp);
         }
       } else {
-        var el = this.createContainer(rangyDom.getDocument(textNode));
+        var el = this.createContainer(rangy.dom.getDocument(textNode));
         textNode.parentNode.insertBefore(el, textNode);
         el.appendChild(textNode);
       }
     },
 
     isRemovable: function(el) {
-      return rangyDom.arrayContains(this.tagNames, el.tagName.toLowerCase()) && wysihtml5.lang.string(el.className).trim() == this.cssClass;
+      return rangy.dom.arrayContains(this.tagNames, el.tagName.toLowerCase()) && wysihtml5.lang.string(el.className).trim() == this.cssClass;
     },
 
     undoToTextNode: function(textNode, range, ancestorWithClass) {
@@ -431,4 +431,4 @@
 
   wysihtml5.selection.HTMLApplier = HTMLApplier;
   
-})(wysihtml5, rangy.dom);
+})(wysihtml5, rangy);

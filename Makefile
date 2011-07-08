@@ -3,6 +3,7 @@ VERSION = $(shell cat version.txt)
 JS_OUTPUT = "dist/wysihtml5-${VERSION}.js"
 
 JS_FILES = lib/rangy/rangy-core.js \
+  lib/base/base.js \
   src/wysihtml5.js \
   src/browser.js \
   src/lang/array.js \

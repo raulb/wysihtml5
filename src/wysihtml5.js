@@ -6,7 +6,7 @@ var wysihtml5 = {
   dom:        {},
   quirks:     {},
   toolbar:    {},
-  utils:      {},
+  lang:       {},
   selection:  {},
   views:      {},
   

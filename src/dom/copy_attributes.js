@@ -16,8 +16,6 @@
  *
  */
 wysihtml5.dom.copyAttributes = function(attributesToCopy) {
-  attributesToCopy = $A(arguments).flatten();
-  
   return {
     from: function(elementToCopyFrom) {
       return {

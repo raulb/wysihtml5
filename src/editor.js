@@ -53,7 +53,7 @@
     allowObjectResizing:  true
   };
   
-  wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend({
+  wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend(
     /** @scope wysihtml5.Editor.prototype */ {
     constructor: function(textareaElement, config) {
       this.textareaElement  = typeof(textareaElement) === "string" ? document.getElementById(textareaElement) : textareaElement;

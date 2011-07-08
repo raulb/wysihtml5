@@ -2959,7 +2959,145 @@ rangy.createModule("DomUtil", function(api, module) {
         win = null;
     });
 });
-var wysihtml5 = {
+/*
+	Base.js, version 1.1a
+	Copyright 2006-2010, Dean Edwards
+	License: http://www.opensource.org/licenses/mit-license.php
+*/
+
+var Base = function() {
+	// dummy
+};
+
+Base.extend = function(_instance, _static) { // subclass
+	var extend = Base.prototype.extend;
+	
+	// build the prototype
+	Base._prototyping = true;
+	var proto = new this;
+	extend.call(proto, _instance);
+  proto.base = function() {
+    // call this method from any other method to invoke that method's ancestor
+  };
+	delete Base._prototyping;
+	
+	// create the wrapper for the constructor function
+	//var constructor = proto.constructor.valueOf(); //-dean
+	var constructor = proto.constructor;
+	var klass = proto.constructor = function() {
+		if (!Base._prototyping) {
+			if (this._constructing || this.constructor == klass) { // instantiation
+				this._constructing = true;
+				constructor.apply(this, arguments);
+				delete this._constructing;
+			} else if (arguments[0] != null) { // casting
+				return (arguments[0].extend || extend).call(arguments[0], proto);
+			}
+		}
+	};
+	
+	// build the class interface
+	klass.ancestor = this;
+	klass.extend = this.extend;
+	klass.forEach = this.forEach;
+	klass.implement = this.implement;
+	klass.prototype = proto;
+	klass.toString = this.toString;
+	klass.valueOf = function(type) {
+		//return (type == "object") ? klass : constructor; //-dean
+		return (type == "object") ? klass : constructor.valueOf();
+	};
+	extend.call(klass, _static);
+	// class initialisation
+	if (typeof klass.init == "function") klass.init();
+	return klass;
+};
+
+Base.prototype = {	
+	extend: function(source, value) {
+		if (arguments.length > 1) { // extending with a name/value pair
+			var ancestor = this[source];
+			if (ancestor && (typeof value == "function") && // overriding a method?
+				// the valueOf() comparison is to avoid circular references
+				(!ancestor.valueOf || ancestor.valueOf() != value.valueOf()) &&
+				/\bbase\b/.test(value)) {
+				// get the underlying method
+				var method = value.valueOf();
+				// override
+				value = function() {
+					var previous = this.base || Base.prototype.base;
+					this.base = ancestor;
+					var returnValue = method.apply(this, arguments);
+					this.base = previous;
+					return returnValue;
+				};
+				// point to the underlying method
+				value.valueOf = function(type) {
+					return (type == "object") ? value : method;
+				};
+				value.toString = Base.toString;
+			}
+			this[source] = value;
+		} else if (source) { // extending with an object literal
+			var extend = Base.prototype.extend;
+			// if this object has a customised extend method then use it
+			if (!Base._prototyping && typeof this != "function") {
+				extend = this.extend || extend;
+			}
+			var proto = {toSource: null};
+			// do the "toString" and other methods manually
+			var hidden = ["constructor", "toString", "valueOf"];
+			// if we are prototyping then include the constructor
+			var i = Base._prototyping ? 0 : 1;
+			while (key = hidden[i++]) {
+				if (source[key] != proto[key]) {
+					extend.call(this, key, source[key]);
+
+				}
+			}
+			// copy each of the source object's properties to this object
+			for (var key in source) {
+				if (!proto[key]) extend.call(this, key, source[key]);
+			}
+		}
+		return this;
+	}
+};
+
+// initialise
+Base = Base.extend({
+	constructor: function() {
+		this.extend(arguments[0]);
+	}
+}, {
+	ancestor: Object,
+	version: "1.1",
+	
+	forEach: function(object, block, context) {
+		for (var key in object) {
+			if (this.prototype[key] === undefined) {
+				block.call(context, object[key], key, object);
+			}
+		}
+	},
+		
+	implement: function() {
+		for (var i = 0; i < arguments.length; i++) {
+			if (typeof arguments[i] == "function") {
+				// if it's a function, call it
+				arguments[i](this.prototype);
+			} else {
+				// add the interface using the extend method
+				this.prototype.extend(arguments[i]);
+			}
+		}
+		return this;
+	},
+	
+	toString: function() {
+		return String(this.valueOf());
+	}
+});var wysihtml5 = {
   version: "0.1.0",
   
   // namespaces
@@ -2967,7 +3105,7 @@ var wysihtml5 = {
   dom:        {},
   quirks:     {},
   toolbar:    {},
-  utils:      {},
+  lang:       {},
   selection:  {},
   views:      {},
   
@@ -3232,13 +3370,13 @@ wysihtml5.browser = (function() {
      * Check whether the browser automatically closes tags that don't need to be opened
      */
     autoClosesUnclosedTags: function() {
-      var testElement = testElement.cloneNode(false),
+      var clonedTestElement = testElement.cloneNode(false),
           returnValue,
           innerHTML;
 
-      testElement.innerHTML = "<p><div></div>";
-      innerHTML             = testElement.innerHTML.toLowerCase();
-      returnValue           = innerHTML === "<p></p><div></div>" || innerHTML === "<p><div></div></p>";
+      clonedTestElement.innerHTML = "<p><div></div>";
+      innerHTML                   = clonedTestElement.innerHTML.toLowerCase();
+      returnValue                 = innerHTML === "<p></p><div></div>" || innerHTML === "<p><div></div></p>";
 
       // Cache result by overwriting current function
       this.autoClosesUnclosedTags = function() { return returnValue; };
@@ -3332,11 +3470,12 @@ wysihtml5.browser = (function() {
       var newArr  = [],
           i       = 0,
           length  = arr.length;
-      for (; i<lengh; i++) {
+      for (; i<length; i++) {
         if (!arrayToSubstract.contains(arr[i])) {
           newArr.push(arr[i]);
         }
       }
+      return newArr;
     },
     
     /**
@@ -3360,7 +3499,7 @@ wysihtml5.browser = (function() {
   /** @scope wysihtml5.lang.Dialog.prototype */ {
   observe: function(eventName, handler) {
     this.events = this.events || {};
-    this.events[eventName] = [] || this.events[eventName];
+    this.events[eventName] = this.events[eventName] || [];
     this.events[eventName].push(handler);
     return this;
   },
@@ -3483,12 +3622,12 @@ wysihtml5.browser = (function() {
       return element;
     }
 
-    if (element == element.ownerDocument.documentElement) {
+    if (element === element.ownerDocument.documentElement) {
       element = element.ownerDocument.body;
     }
 
     return _parseNode(element);
-  };
+  }
   
   /**
    * This is basically a rebuild of
@@ -3505,7 +3644,10 @@ wysihtml5.browser = (function() {
         punctuation = "";
       }
       var realUrl    = url,
-          displayUrl = url.truncate(MAX_DISPLAY_LENGTH);
+          displayUrl = url;
+      if (url.length > MAX_DISPLAY_LENGTH) {
+        displayUrl = displayUrl.substr(0, MAX_DISPLAY_LENGTH) + "...";
+      }
       // Add http prefix if necessary
       if (realUrl.substr(0, 4) === "www.") {
         realUrl = "http://" + realUrl;
@@ -3553,7 +3695,7 @@ wysihtml5.browser = (function() {
       nodeName = node.nodeName;
       if (IGNORE_URLS_IN.contains(nodeName)) {
         return true;
-      } else if (nodeName == "body") {
+      } else if (nodeName === "body") {
         return false;
       }
     }
@@ -3730,8 +3872,6 @@ wysihtml5.dom.convertToList = (function() {
  *
  */
 wysihtml5.dom.copyAttributes = function(attributesToCopy) {
-  attributesToCopy = $A(arguments).flatten();
-  
   return {
     from: function(elementToCopyFrom) {
       return {
@@ -3782,7 +3922,7 @@ wysihtml5.dom.copyAttributes = function(attributesToCopy) {
   
   var shouldIgnoreBoxSizingBorderBox = function(element) {
     if (hasBoxSizingBorderBox(element)) {
-       return parseInt(api.getStyle("width").from(element), 10) < element.getWidth();
+       return parseInt(api.getStyle("width").from(element), 10) < element.offsetWidth;
     }
     return false;
   };
@@ -3801,16 +3941,17 @@ wysihtml5.dom.copyAttributes = function(attributesToCopy) {
     return {
       from: function(element) {
         if (shouldIgnoreBoxSizingBorderBox(element)) {
-          stylesToCopy = stylesToCopy.without.apply(stylesToCopy, BOX_SIZING_PROPERTIES);
+          stylesToCopy = wysihtml5.lang.array(stylesToCopy).without(BOX_SIZING_PROPERTIES);
         }
         
-        var cssText = stylesToCopy.inject("", function(str, property) {
-          var propertyValue = api.getStyle(property).from(element);
-          if (propertyValue) {
-            str += property + ":" + propertyValue + ";";
-          }
-          return str;
-        });
+        var cssText = "",
+            length  = stylesToCopy.length,
+            i       = 0,
+            property;
+        for (; i<length; i++) {
+          property = stylesToCopy[i];
+          cssText += property + ":" + api.getStyle(property).from(element) + ";";
+        }
         
         return {
           to: function(element) {
@@ -3832,7 +3973,7 @@ wysihtml5.dom.copyAttributes = function(attributesToCopy) {
       var target    = event.target,
           match     = wysihtml5.lang.array(container.querySelectorAll(selector));
       
-      while (match.length && target && target !== container) {
+      while (target && target !== container) {
         if (match.contains(target)) {
           handler.call(target, event);
           break;
@@ -4265,7 +4406,7 @@ wysihtml5.dom.parse = (function() {
    * Iterates over all childs of the element, recreates them, appends them into a document fragment
    * which later replaces the entire body content
    */
-  function sanitizeHTML(elementOrHtml, rules, context, cleanUp) {
+  function parse(elementOrHtml, rules, context, cleanUp) {
     currentRules      = rules;
     context = context || elementOrHtml.ownerDocument || document;
     var fragment      = context.createDocumentFragment(),
@@ -4630,7 +4771,7 @@ wysihtml5.dom.parse = (function() {
     })()
   };
   
-  return sanitizeHTML;
+  return parse;
 })();/**
  * Checks for empty text node childs and removes them
  *
@@ -5000,15 +5141,20 @@ wysihtml5.dom.replaceWithChildNodes = function(node) {
     },
 
     _getHtml: function(templateVars) {
-      if (templateVars.stylesheets) {
-        templateVars.stylesheets = [templateVars.stylesheets].flatten().map(function(stylesheet) {
-          return '<link rel="stylesheet" href="' + stylesheet + '">';
-        }).join("");
-      } else {
-        templateVars.stylesheets = "";
+      var stylesheets = templateVars.stylesheets,
+          html        = "",
+          i           = 0,
+          length;
+      stylesheets = typeof(stylesheets) === "string" ? [stylesheets] : stylesheets;
+      if (stylesheets) {
+        length = stylesheets.length;
+        for (; i<length; i++) {
+          html += '<link rel="stylesheet" href="' + stylesheets[i] + '">';
+        }
       }
+      templateVars.stylesheets = html;
 
-      return (
+      return wysihtml5.lang.string(
         '<!DOCTYPE html><html><head>'
         + '<meta http-equiv="X-UA-Compatible" content="#{uaCompatible}"><meta charset="#{charset}">#{stylesheets}</head>'
         + '<body></body></html>'
@@ -5058,6 +5204,10 @@ wysihtml5.dom.setAttributes = function(attributes) {
   };
   return {
     on: function(element) {
+      if (typeof(styles) === "string") {
+        element.style.cssText += ";" + styles;
+        return;
+      }
       for (var i in styles) {
         i = styleMapping[i] || i;
         element.style[i] = styles[i];
@@ -5811,7 +5961,7 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
  * Inspired by the rangy CSS Applier module written by Tim Down and  licensed under the MIT license.
  * http://code.google.com/p/rangy/
  */
-(function(wysihtml5, rangyDom) {
+(function(wysihtml5, rangy) {
   var defaultTagName = "span";
   
   var REG_EXP_WHITE_SPACE = /\s+/g;
@@ -5873,7 +6023,7 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
   }
 
   function isSplitPoint(node, offset) {
-    if (rangyDom.isCharacterDataNode(node)) {
+    if (rangy.dom.isCharacterDataNode(node)) {
       if (offset == 0) {
         return !!node.previousSibling;
       } else if (offset == node.length) {
@@ -5888,15 +6038,15 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
 
   function splitNodeAt(node, descendantNode, descendantOffset) {
     var newNode;
-    if (rangyDom.isCharacterDataNode(descendantNode)) {
+    if (rangy.dom.isCharacterDataNode(descendantNode)) {
       if (descendantOffset == 0) {
-        descendantOffset = rangyDom.getNodeIndex(descendantNode);
+        descendantOffset = rangy.dom.getNodeIndex(descendantNode);
         descendantNode = descendantNode.parentNode;
       } else if (descendantOffset == descendantNode.length) {
-        descendantOffset = rangyDom.getNodeIndex(descendantNode) + 1;
+        descendantOffset = rangy.dom.getNodeIndex(descendantNode) + 1;
         descendantNode = descendantNode.parentNode;
       } else {
-        newNode = rangyDom.splitDataNode(descendantNode, descendantOffset);
+        newNode = rangy.dom.splitDataNode(descendantNode, descendantOffset);
       }
     }
     if (!newNode) {
@@ -5908,9 +6058,9 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
       while ((child = descendantNode.childNodes[descendantOffset])) {
         newNode.appendChild(child);
       }
-      rangyDom.insertAfter(newNode, descendantNode);
+      rangy.dom.insertAfter(newNode, descendantNode);
     }
-    return (descendantNode == node) ? newNode : splitNodeAt(node, newNode.parentNode, rangyDom.getNodeIndex(newNode));
+    return (descendantNode == node) ? newNode : splitNodeAt(node, newNode.parentNode, rangy.dom.getNodeIndex(newNode));
   }
   
   function Merge(firstNode) {
@@ -5967,7 +6117,7 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
       var cssClassMatch;
       while (node) {
         cssClassMatch = this.cssClass ? hasClass(node, this.cssClass, this.similarClassRegExp) : true;
-        if (node.nodeType == wysihtml5.ELEMENT_NODE && rangyDom.arrayContains(this.tagNames, node.tagName.toLowerCase()) && cssClassMatch) {
+        if (node.nodeType == wysihtml5.ELEMENT_NODE && rangy.dom.arrayContains(this.tagNames, node.tagName.toLowerCase()) && cssClassMatch) {
           return node;
         }
         node = node.parentNode;
@@ -6051,8 +6201,8 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
     },
     
     areElementsMergeable: function(el1, el2) {
-      return rangyDom.arrayContains(this.tagNames, (el1.tagName || "").toLowerCase())
-        && rangyDom.arrayContains(this.tagNames, (el2.tagName || "").toLowerCase())
+      return rangy.dom.arrayContains(this.tagNames, (el1.tagName || "").toLowerCase())
+        && rangy.dom.arrayContains(this.tagNames, (el2.tagName || "").toLowerCase())
         && hasSameClasses(el1, el2)
         && elementsHaveSameNonClassAttributes(el1, el2);
     },
@@ -6067,19 +6217,19 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
 
     applyToTextNode: function(textNode) {
       var parent = textNode.parentNode;
-      if (parent.childNodes.length == 1 && rangyDom.arrayContains(this.tagNames, parent.tagName.toLowerCase())) {
+      if (parent.childNodes.length == 1 && rangy.dom.arrayContains(this.tagNames, parent.tagName.toLowerCase())) {
         if (this.cssClass) {
           addClass(parent, this.cssClass, this.similarClassRegExp);
         }
       } else {
-        var el = this.createContainer(rangyDom.getDocument(textNode));
+        var el = this.createContainer(rangy.dom.getDocument(textNode));
         textNode.parentNode.insertBefore(el, textNode);
         el.appendChild(textNode);
       }
     },
 
     isRemovable: function(el) {
-      return rangyDom.arrayContains(this.tagNames, el.tagName.toLowerCase()) && wysihtml5.lang.string(el.className).trim() == this.cssClass;
+      return rangy.dom.arrayContains(this.tagNames, el.tagName.toLowerCase()) && wysihtml5.lang.string(el.className).trim() == this.cssClass;
     },
 
     undoToTextNode: function(textNode, range, ancestorWithClass) {
@@ -6235,7 +6385,7 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
 
   wysihtml5.selection.HTMLApplier = HTMLApplier;
   
-})(wysihtml5, rangy.dom);/**
+})(wysihtml5, rangy);/**
  * TODO: the following methods still need unit test coverage
  */
 wysihtml5.views.View = Base.extend(
@@ -6413,7 +6563,7 @@ wysihtml5.views.View = Base.extend(
         "className", "spellcheck", "title", "lang", "dir", "accessKey"
       ]).from(this.textarea.element).to(this.element);
       
-      dom.addClass(this.config.composerClassName).to(this.element);
+      dom.addClass(this.element, this.config.composerClassName);
 
       // Make the editor look like the original textarea, by syncing styles
       if (this.config.style) {
@@ -6467,7 +6617,7 @@ wysihtml5.views.View = Base.extend(
       }
 
       // Okay hide the textarea, we are ready to go
-      this.textarea.style.display = "none";
+      this.textarea.hide();
 
       // Fire global (before-)load event
       this.parent.fire("beforeload").fire("load");
@@ -6505,7 +6655,7 @@ wysihtml5.views.View = Base.extend(
           // The autoLink helper method reveals a reg exp to detect correct urls
           urlRegExp       = dom.autoLink.URL_REG_EXP,
           getTextContent  = function(element) {
-            var textContent = dom.getTextContent(element).strip();
+            var textContent = wysihtml5.lang.string(dom.getTextContent(element)).trim();
             if (textContent.substr(0, 4) === "www.") {
               textContent = "http://" + textContent;
             }
@@ -6976,7 +7126,7 @@ wysihtml5.views.View = Base.extend(
     _observe: function() {
       var interval,
           that          = this,
-          form          = this.textarea.element.up("form"),
+          form          = this.textarea.element.form,
           startInterval = function() {
             interval = setInterval(function() { that.fromComposerToTextarea(); }, INTERVAL);
           },
@@ -7050,7 +7200,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
   },
   
   isEmpty: function() {
-    return !this.element.value.strip() || this.hasPlaceholderSet();
+    return !wysihtml5.lang.string(this.element.value).trim() || this.hasPlaceholderSet();
   },
   
   _observe: function() {
@@ -7169,9 +7319,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
       var formElements  = this.container.querySelectorAll(SELECTOR_FORM_ELEMENTS),
           i             = 0,
           length        = formElements.length,
-          interval      = this.interval,
-          clearInterval = function() { clearInterval(interval); };
-
+          clearInterval = function() { clearInterval(that.interval); };
       for (; i<length; i++) {
         dom.observe(formElements[i], "change", clearInterval);
       }
@@ -7380,8 +7528,8 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
     /** @scope wysihtml5.toolbar.Toolbar.prototype */ {
     constructor: function(editor, container) {
       this.editor     = editor;
-      this.container  = container;
-      this.composer   = parent.composer;
+      this.container  = typeof(container) === "string" ? document.getElementById(container) : container;
+      this.composer   = editor.composer;
 
       this._getLinks("command");
       this._getLinks("action");
@@ -7389,7 +7537,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
       this._observe();
       this.show();
       
-      var speechInputLinks  = container.querySelectorAll("[data-wysihtml5-command=insertSpeech]"),
+      var speechInputLinks  = this.container.querySelectorAll("[data-wysihtml5-command=insertSpeech]"),
           length            = speechInputLinks.length,
           i                 = 0;
       for (; i<length; i++) {
@@ -7398,7 +7546,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
     },
 
     _getLinks: function(type) {
-      var links   = this[type + "Links"] = this.container.querySelectorAll("a[data-wysihtml5-" + type + "]"),
+      var links   = this[type + "Links"] = wysihtml5.lang.array(this.container.querySelectorAll("a[data-wysihtml5-" + type + "]")).get(),
           length  = links.length,
           i       = 0,
           mapping = this[type + "Mapping"] = {},
@@ -7566,7 +7714,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
         command = commandMapping[i];
         if (this.commandsDisabled) {
           state = false;
-          dom.addClass(command.link, CLASS_NAME_COMMAND_ACTIVE);
+          dom.removeClass(command.link, CLASS_NAME_COMMAND_ACTIVE);
           if (command.dialog) {
             command.dialog.hide();
           }
@@ -7646,7 +7794,7 @@ wysihtml5.commands = {
     var obj     = this[command],
         method  = obj && obj.exec;
     if (method) {
-      return method(element, command, value);
+      return method.call(obj, element, command, value);
     } else {
       try {
         // try/catch for buggy firefox
@@ -7670,8 +7818,7 @@ wysihtml5.commands = {
     var obj     = this[command],
         method  = obj && obj.state;
     if (method) {
-      // TODO: Consider to pass the selectedNode as element instead of the contentEditable
-      return method(element, command, commandValue);
+      return method.call(obj, element, command, commandValue);
     } else {
       try {
         // try/catch for buggy firefox
@@ -8031,7 +8178,7 @@ wysihtml5.commands = {
     return !!wysihtml5.lang.string(element.className).trim();
   }
   
-  return {
+  wysihtml5.commands.formatBlock = {
     exec: function(element, command, nodeName, className, classRegExp) {
       var doc          = element.ownerDocument,
           blockElement = this.state(element, command, nodeName, className, classRegExp),
@@ -8162,7 +8309,7 @@ wysihtml5.commands = {
     return htmlApplier[identifier];
   }
   
-  return {
+  wysihtml5.commands.formatInline = {
     exec: function(element, command, tagName, className, classRegExp) {
       var range = wysihtml5.selection.getRange(element.ownerDocument);
       if (!range) {
@@ -8319,6 +8466,7 @@ wysihtml5.commands = {
 })(wysihtml5);(function(wysihtml5) {
   var undef,
       LINE_BREAK = "<br>" + (wysihtml5.browser.needsSpaceAfterLineBreak() ? " " : "");
+  
   wysihtml5.commands.insertLineBreak = {
     exec: function(element, command) {
       if (wysihtml5.commands.support(element, command)) {
@@ -8342,7 +8490,7 @@ wysihtml5.commands = {
 })(wysihtml5);(function(wysihtml5) {
   var undef;
   
-  return {
+  wysihtml5.commands.insertOrderedList = {
     exec: function(element, command) {
       var doc = element.ownerDocument,
           selectedNode,
@@ -8608,7 +8756,7 @@ wysihtml5.commands = {
     allowObjectResizing:  true
   };
   
-  wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend({
+  wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend(
     /** @scope wysihtml5.Editor.prototype */ {
     constructor: function(textareaElement, config) {
       this.textareaElement  = typeof(textareaElement) === "string" ? document.getElementById(textareaElement) : textareaElement;

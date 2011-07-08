@@ -247,13 +247,13 @@ wysihtml5.browser = (function() {
      * Check whether the browser automatically closes tags that don't need to be opened
      */
     autoClosesUnclosedTags: function() {
-      var testElement = testElement.cloneNode(false),
+      var clonedTestElement = testElement.cloneNode(false),
           returnValue,
           innerHTML;
 
-      testElement.innerHTML = "<p><div></div>";
-      innerHTML             = testElement.innerHTML.toLowerCase();
-      returnValue           = innerHTML === "<p></p><div></div>" || innerHTML === "<p><div></div></p>";
+      clonedTestElement.innerHTML = "<p><div></div>";
+      innerHTML                   = clonedTestElement.innerHTML.toLowerCase();
+      returnValue                 = innerHTML === "<p></p><div></div>" || innerHTML === "<p><div></div></p>";
 
       // Cache result by overwriting current function
       this.autoClosesUnclosedTags = function() { return returnValue; };

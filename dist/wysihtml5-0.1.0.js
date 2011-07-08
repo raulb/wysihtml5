@@ -3356,7 +3356,8 @@ wysihtml5.browser = (function() {
       return newArray;
     }
   };
-};wysihtml5.lang.Dispatcher = Class.create({
+};wysihtml5.lang.Dispatcher = Base.extend(
+  /** @scope wysihtml5.lang.Dialog.prototype */ {
   observe: function(eventName, handler) {
     this.events = this.events || {};
     this.events[eventName] = [] || this.events[eventName];
@@ -4845,10 +4846,10 @@ wysihtml5.dom.replaceWithChildNodes = function(node) {
         "write", "open", "close"
       ];
   
-  wysihtml5.dom.Sandbox = Class.create(
+  wysihtml5.dom.Sandbox = Base.extend(
     /** @scope wysihtml5.dom.Sandbox.prototype */ {
 
-    initialize: function(readyCallback, config) {
+    constructor: function(readyCallback, config) {
       this.callback = readyCallback || wysihtml5.EMPTY_FUNCTION;
       this.config   = wysihtml5.lang.object({}).merge(defaultConfig).merge(config).get();
       this.iframe   = this._createIframe();
@@ -6237,9 +6238,9 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
 })(wysihtml5, rangy.dom);/**
  * TODO: the following methods still need unit test coverage
  */
-wysihtml5.views.View = Class.create(
+wysihtml5.views.View = Base.extend(
   /** @scope wysihtml5.views.View.prototype */ {
-  initialize: function(parent, textareaElement, config) {
+  constructor: function(parent, textareaElement, config) {
     this.parent   = parent;
     this.element  = textareaElement;
     this.config   = config;
@@ -6254,7 +6255,7 @@ wysihtml5.views.View = Class.create(
         if (view === that.name) {
           that.parent.currentView = that;
           that.show();
-          // Using defer() here to make sure that the placeholder is set before focusing
+          // Using tiny delay here to make sure that the placeholder is set before focusing
           setTimeout(function() { that.focus(); }, 0);
         } else {
           that.hide();
@@ -6272,11 +6273,11 @@ wysihtml5.views.View = Class.create(
   },
   
   hide: function() {
-    this.element.hide();
+    this.element.style.display = "none";
   },
   
   show: function() {
-    this.element.show();
+    this.element.style.display = "";
   },
   
   disable: function() {
@@ -6291,14 +6292,14 @@ wysihtml5.views.View = Class.create(
       browser   = wysihtml5.browser,
       selection = wysihtml5.selection;
   
-  wysihtml5.views.Composer = Class.create(wysihtml5.views.View, 
+  wysihtml5.views.Composer = wysihtml5.views.View.extend(
     /** @scope wysihtml5.views.Composer.prototype */ {
     name: "composer",
 
     // Needed for firefox in order to display a proper caret in an empty contentEditable
     CARET_HACK: "<br>",
 
-    initialize: function(parent, textareaElement, config) {
+    constructor: function(parent, textareaElement, config) {
       this.base(parent, textareaElement, config);
       this.textarea = this.parent.textarea;
       this._initSandbox();
@@ -6344,17 +6345,17 @@ wysihtml5.views.View = Class.create(
       if (this._displayStyle === "none") {
         this._displayStyle = null;
       }
-      this.iframe.hide();
+      this.iframe.style.display = "none";
     },
 
-    disable: function($super) {
+    disable: function() {
       this.element.removeAttribute("contentEditable");
-      $super();
+      this.base();
     },
 
-    enable: function($super) {
+    enable: function() {
       this.element.setAttribute("contentEditable", "true");
-      $super();
+      this.base();
     },
 
     getTextContent: function() {
@@ -6466,7 +6467,7 @@ wysihtml5.views.View = Class.create(
       }
 
       // Okay hide the textarea, we are ready to go
-      this.textarea.hide();
+      this.textarea.style.display = "none";
 
       // Fire global (before-)load event
       this.parent.fire("beforeload").fire("load");
@@ -6920,10 +6921,10 @@ wysihtml5.views.View = Class.create(
 (function(wysihtml5) {
   var INTERVAL = 400;
   
-  wysihtml5.views.Synchronizer = Class.create(
+  wysihtml5.views.Synchronizer = Base.extend(
     /** @scope wysihtml5.views.Synchronizer.prototype */ {
 
-    initialize: function(editor, textarea, composer) {
+    constructor: function(editor, textarea, composer) {
       this.editor   = editor;
       this.textarea = textarea;
       this.composer = composer;
@@ -7011,12 +7012,12 @@ wysihtml5.views.View = Class.create(
     }
   });
 })(wysihtml5);
-wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
+wysihtml5.views.Textarea = wysihtml5.views.View.extend(
   /** @scope wysihtml5.views.Textarea.prototype */ {
   name: "textarea",
   
-  initialize: function($super, parent, textareaElement, config) {
-    $super(parent, textareaElement, config);
+  constructor: function(parent, textareaElement, config) {
+    this.base(parent, textareaElement, config);
     
     this._observe();
   },
@@ -7115,9 +7116,9 @@ wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
       ATTRIBUTE_FIELDS        = "data-wysihtml5-dialog-field";
       
   
-  wysihtml5.toolbar.Dialog = Class.create(wysihtml5.lang.Dispatcher,
+  wysihtml5.toolbar.Dialog = wysihtml5.lang.Dispatcher.extend(
     /** @scope wysihtml5.toolbar.Dialog.prototype */ {
-    initialize: function(link, container) {
+    constructor: function(link, container) {
       this.link       = link;
       this.container  = container;
     },
@@ -7375,9 +7376,9 @@ wysihtml5.views.Textarea = Class.create(wysihtml5.views.View,
       CLASS_NAME_COMMAND_ACTIVE     = "wysihtml5-command-active",
       dom                           = wysihtml5.dom;
   
-  wysihtml5.toolbar.Toolbar = Class.create(
+  wysihtml5.toolbar.Toolbar = Base.extend(
     /** @scope wysihtml5.toolbar.Toolbar.prototype */ {
-    initialize: function(editor, container) {
+    constructor: function(editor, container) {
       this.editor     = editor;
       this.container  = container;
       this.composer   = parent.composer;
@@ -8607,9 +8608,9 @@ wysihtml5.commands = {
     allowObjectResizing:  true
   };
   
-  wysihtml5.Editor = Class.create(wysihtml5.lang.Dispatcher, 
+  wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend({
     /** @scope wysihtml5.Editor.prototype */ {
-    initialize: function(textareaElement, config) {
+    constructor: function(textareaElement, config) {
       this.textareaElement  = typeof(textareaElement) === "string" ? document.getElementById(textareaElement) : textareaElement;
       this.config           = wysihtml5.lang.object({}).merge(defaultConfig).merge(config).get();
       this.textarea         = new wysihtml5.views.Textarea(this, this.textareaElement, this.config);

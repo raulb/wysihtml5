@@ -473,4 +473,33 @@ if (wysihtml5.browser.supported()) {
       "Allowed classes 'c' is correctly kept and unknown class 'b' is correctly removed."
     );
   });
+  
+  test("Check Firefox misbehavior with tilde characters in urls", function() {
+    var rules = {
+      tags: {
+        a: {
+          set_attributes: {
+            target: "_blank",
+            rel:    "nofollow"
+          },
+          check_attributes: {
+            href:   "url"
+          }
+        }
+      }
+    };
+    
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=664398
+    //
+    // In Firefox this:
+    //      var d = document.createElement("div");
+    //      d.innerHTML ='<a href="~"></a>';
+    //      d.innerHTML;
+    // will result in:
+    //      <a href="%7E"></a>
+    // which is wrong
+    ok(
+      this.sanitize('<a href="http://google.com/~foo"></a>', rules).indexOf("~") !== -1
+    );
+  });
 }

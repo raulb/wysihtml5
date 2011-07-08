@@ -5,10 +5,10 @@ JS_OUTPUT = "dist/wysihtml5-${VERSION}.js"
 JS_FILES = lib/rangy/rangy-core.js \
   src/wysihtml5.js \
   src/browser.js \
-  src/utils/array.js \
-  src/utils/dispatcher.js \
-  src/utils/object.js \
-  src/utils/string.js \
+  src/lang/array.js \
+  src/lang/dispatcher.js \
+  src/lang/object.js \
+  src/lang/string.js \
   src/dom/auto_link.js \
   src/dom/class.js \
   src/dom/contains.js \

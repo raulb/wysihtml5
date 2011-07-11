@@ -10,18 +10,19 @@ module("wysihtml5.dom.copyAttributes", {
   },
   
   teardown: function() {
-    this.iframe.remove();
+    this.iframe.parentNode.removeChild(this.iframe);
   }
 });
 
 
 test("Basic Tests", function() {
-  wysihtml5.dom.setAttributes({ title: "foobar", lang: "en", className: "foo bar" }).on(this.div);
+  var attributes = { title: "foobar", lang: "en", className: "foo bar" };
+  wysihtml5.dom.setAttributes(attributes).on(this.div);
   wysihtml5.dom.copyAttributes(["title", "lang", "className"]).from(this.div).to(this.span);
   
   equals(this.span.title, attributes.title, "Title correctly copied");
   equals(this.span.lang, attributes.lang, "Lang correctly copied");
-  equals(this.span.className, attributes.className, "Text-align correctly copied");
+  equals(this.span.className, attributes.className, "Class correctly copied");
 });
 
 
@@ -33,7 +34,7 @@ test("Test copying attributes from one element to another element which is in an
   
   // Timeout needed to make sure that the iframe is ready
   setTimeout(function() {
-    var iframeDocument = this.iframe.contentWindow.document,
+    var iframeDocument = that.iframe.contentWindow.document,
         iframeElement = iframeDocument.createElement("div");
     
     iframeDocument.body.appendChild(iframeElement);

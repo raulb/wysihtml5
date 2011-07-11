@@ -102,8 +102,8 @@
         textareaElement       = this.textarea.element,
         hasPlaceholder        = textareaElement.hasAttribute("placeholder"),
         originalPlaceholder   = hasPlaceholder && textareaElement.getAttribute("placeholder");
-    this.focusStylesHost      = this.focusStylesHost  || HOST_TEMPLATE.cloneNode();
-    this.blurStylesHost       = this.blurStylesHost   || HOST_TEMPLATE.cloneNode();
+    this.focusStylesHost      = this.focusStylesHost  || HOST_TEMPLATE.cloneNode(false);
+    this.blurStylesHost       = this.blurStylesHost   || HOST_TEMPLATE.cloneNode(false);
   
     // Remove placeholder before copying (as the placeholder has an affect on the computed style)
     if (hasPlaceholder) {

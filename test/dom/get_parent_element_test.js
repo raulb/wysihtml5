@@ -21,12 +21,13 @@ test("Basic test - nodeName only", function() {
 
 
 test("Check 'levels' param - nodeName only", function() {
-  this.container.innerHTML = "<div><div><ul><li></li></ul></blockquote></div></div>";
+  this.container.innerHTML = "<div><div><ul><li></li></ul></div></div>";
   
   var listItem  = this.container.querySelector("li"),
-      nestedDiv = this.container.querySelector("div div");
+      nestedDiv = this.container.querySelector("div").querySelector("div");
   equals(wysihtml5.dom.getParentElement(listItem, { nodeName: "DIV" }, 2), null);
   equals(wysihtml5.dom.getParentElement(listItem, { nodeName: "DIV" }, 3), nestedDiv);
+  
 });
 
 
@@ -99,7 +100,7 @@ test("Check 'levels' param - nodeName + className", function() {
   this.container.innerHTML = '<div class="wysiwyg-color-green"><div class="wysiwyg-color-green"><ul><li></li></ul></blockquote></div></div>';
   
   var listItem  = this.container.querySelector("li"),
-      nestedDiv = this.container.querySelector("div div"),
+      nestedDiv = this.container.querySelector("div").querySelector("div"),
       result;
   
   result = wysihtml5.dom.getParentElement(listItem, {
@@ -122,7 +123,7 @@ test("Check  - no nodeName", function() {
   this.container.innerHTML = '<div><div class="wysiwyg-text-align-right"><span>foo</span></div></div>';
   
   var spanElement = this.container.querySelector("span"),
-      alignedDiv  = this.container.querySelector("div div"),
+      alignedDiv  = this.container.querySelector("div").querySelector("div"),
       result;
   
   result = wysihtml5.dom.getParentElement(spanElement, {
@@ -136,7 +137,7 @@ test("Test - with no nodeName", function() {
   this.container.innerHTML = '<div><div class="wysiwyg-text-align-right"><span>foo</span></div></div>';
   
   var spanElement = this.container.querySelector("span"),
-      alignedDiv  = this.container.querySelector("div div"),
+      alignedDiv  = this.container.querySelector("div").querySelector("div"),
       result;
   
   result = wysihtml5.dom.getParentElement(spanElement, {
@@ -150,7 +151,7 @@ test("Test - with only a classRegExp", function() {
   this.container.innerHTML = '<div><div class="wysiwyg-text-align-right"><span>foo</span></div></div>';
   
   var spanElement = this.container.querySelector("span"),
-      alignedDiv  = this.container.querySelector("div div"),
+      alignedDiv  = this.container.querySelector("div").querySelector("div"),
       result;
   
   result = wysihtml5.dom.getParentElement(spanElement, {

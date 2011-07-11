@@ -104,7 +104,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<h2>take this you snorty little sanitizer</h2>' +
       '<h2>yes, you!</h2>' +
-      '<span><img alt="foo" border="1" height="10" src="http://foo.gif" width="10"></span>' +
+      '<span><img alt="foo" border="1" src="http://foo.gif" height="10" width="10"></span>' +
       '<span><i title=""></i></span>'
     );
   });

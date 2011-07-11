@@ -61,24 +61,23 @@ wysihtml5.dom.parse = (function() {
    * Therefore we've to use the browser's ordinary HTML parser invoked by setting innerHTML.
    */
   var NODE_TYPE_MAPPING = {
-    "1": _handleElement,
-    "3": _handleText
-  };
-  
-  // Rename unknown tags to this
-  var DEFAULT_NODE_NAME = "span";
-  
-  var WHITE_SPACE_REG_EXP = /\s+/;
-  
-  var currentRules = {};
+        "1": _handleElement,
+        "3": _handleText
+      },
+      // Rename unknown tags to this
+      DEFAULT_NODE_NAME   = "span",
+      WHITE_SPACE_REG_EXP = /\s+/,
+      defaultRules        = { tags: {}, classes: {} },
+      currentRules        = {};
   
   /**
    * Iterates over all childs of the element, recreates them, appends them into a document fragment
    * which later replaces the entire body content
    */
   function parse(elementOrHtml, rules, context, cleanUp) {
-    currentRules      = rules;
-    context = context || elementOrHtml.ownerDocument || document;
+    wysihtml5.lang.object(currentRules).merge(defaultRules).merge(rules).get();
+    
+    context           = context || elementOrHtml.ownerDocument || document;
     var fragment      = context.createDocumentFragment(),
         isString      = typeof(elementOrHtml) === "string",
         element,
@@ -106,7 +105,7 @@ wysihtml5.dom.parse = (function() {
     // Insert new DOM tree
     element.appendChild(fragment);
     
-    return isString ? element.innerHTML : element;
+    return isString ? wysihtml5.quirks.getCorrectInnerHTML(element) : element;
   }
   
   function _convert(oldNode, cleanUp) {
@@ -381,7 +380,7 @@ wysihtml5.dom.parse = (function() {
     numbers: (function() {
       var REG_EXP = /\D/g;
       return function(attributeValue) {
-        attributeValue = attributeValue.replace(REG_EXP, "");
+        attributeValue = (attributeValue || "").replace(REG_EXP, "");
         return attributeValue || null;
       };
     })()

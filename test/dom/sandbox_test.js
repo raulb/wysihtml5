@@ -53,10 +53,12 @@ test("Basic Test", function() {
     ok(isDocumentObject, "wysihtml5.Sandbox.prototype.getDocument() works properly");
     
     equals(sandbox.getIframe(), iframe, "wysihtml5.Sandbox.prototype.getIframe() returns the iframe correctly");
-    equalls(typeof(sandbox.getWindow().onerror), "function", "window.onerror is set");
+    equals(typeof(sandbox.getWindow().onerror), "function", "window.onerror is set");
     
     start();
-  }).insertInto(document.body);
+  });
+  
+  sandbox.insertInto(document.body);
 });
 
 
@@ -93,7 +95,9 @@ test("Security test #1", function() {
     ok(that.isUnset("window.postMessage", iframeWindow),    "window.openDatabase is unset");
     
     start();
-  }).insertInto(document.body);
+  });
+  
+  sandbox.insertInto(document.body);
 });
 
 
@@ -111,7 +115,9 @@ test("Security test #2", function() {
       
       start();
     }, 2000);
-  }).insertInto(document.body);
+  });
+  
+  sandbox.insertInto(document.body);
 });
 
 
@@ -134,7 +140,9 @@ test("Check charset & doctype", function() {
       equals(that.getCharset(iframeDocument), that.getCharset(document), "Charset isn't overwritten");
       start();
     }, 500);
-  }).insertInto(document.body);
+  });
+  
+  sandbox.insertInto(document.body);
 });
 
 

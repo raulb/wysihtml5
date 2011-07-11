@@ -29,7 +29,7 @@
    * Check whether given node is a text node and whether it's empty
    */
   function _isBlankTextNode(node) {
-    return node.nodeType === wysihtml5.TEXT_NODE && String(node.data).blank();
+    return node.nodeType === wysihtml5.TEXT_NODE && !wysihtml5.lang.string(node.data).trim();
   }
 
   /**

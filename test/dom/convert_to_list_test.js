@@ -5,8 +5,11 @@ module("wysihtml5.dom.convertToList", {
   
   convertToList: function(html, type) {
     var container = wysihtml5.dom.getAsDom(html);
+    document.body.appendChild(container);
     wysihtml5.dom.convertToList(container.firstChild, type);
-    return container.innerHTML;
+    var innerHTML = container.innerHTML;
+    container.parentNode.removeChild(container);
+    return innerHTML;
   }
 });
 

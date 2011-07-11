@@ -24,7 +24,7 @@ module("wysihtml5.dom.copyStyles", {
 
 
 test("Basic Tests", function() {
-  this.div.setStyle({ width: "400px", height: "200px", textAlign: "right", "float": "left" });
+  this.div.style.cssText = "width: 400px; height: 200px; text-align: right; float: left;";
   
   wysihtml5.dom.copyStyles(["width", "height", "text-align", "float"]).from(this.div).to(this.span);
   
@@ -44,7 +44,7 @@ test("Whether it copies native user agent styles", function() {
 
 test("Advanced tests", function() {
   this.span.style.cssText = "color: rgb(255, 0, 0); -moz-border-radius: 5px 5px 5px 5px;";
-  this.div.style.cssText = "color: rgb(0, 255, 0); text-decoration: underline;";
+  this.div.style.cssText  = "color: rgb(0, 255, 0); text-decoration: underline;";
   
   wysihtml5.dom
     .copyStyles(["color", "-moz-border-radius", "unknown-style"])
@@ -60,7 +60,7 @@ test("Advanced tests", function() {
   var anotherDivColor = wysihtml5.dom.getStyle("color").from(this.anotherDiv).replace(/\s+/g, "");
   ok(anotherDivColor == "rgb(255,0,0)" || anotherDivColor == "#ff0000", "Second div has correct color");
   
-  equals(wysihtml5.dom.getStyle("textDecoration").from(this.div), "underline", "Text-decoration hasn't been overwritten");
+  equals(wysihtml5.dom.getStyle("text-decoration").from(this.div), "underline", "Text-decoration hasn't been overwritten");
   
   if ("MozBorderRadius" in this.div.style) {
     equals(wysihtml5.dom.getStyle("-moz-border-radius").from(this.div),        "5px 5px 5px 5px", "First div has correct border-radius");

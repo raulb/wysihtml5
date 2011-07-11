@@ -21,7 +21,8 @@
     },
 
     getValue: function(parse) {
-      var value = this.isEmpty() ? "" : this.element.innerHTML;
+      var value = this.isEmpty() ? "" : wysihtml5.quirks.getCorrectInnerHTML(this.element);
+      
       if (parse) {
         value = this.parent.parse(value);
       }
@@ -29,9 +30,8 @@
       // Replace all "zero width no breaking space" chars
       // which are used as hacks to enable some functionalities
       // Also remove all CARET hacks that somehow got left
-      value = value
-        .replace(new RegExp(wysihtml5.INVISIBLE_SPACE, "g"), "")
-        .replace(new RegExp(selection.PLACEHOLDER_TEXT, "g"), "");
+      value = wysihtml5.lang.string(value).replace(wysihtml5.INVISIBLE_SPACE).by("");
+      value = wysihtml5.lang.string(value).replace(selection.PLACEHOLDER_TEXT).by("");
 
       return value;
     },
@@ -269,11 +269,11 @@
             var target = event.target || event.srcElement,
                 style  = target.style,
                 i      = 0,
-                attribute;
+                property;
             for(; i<propertiesLength; i++) {
               property = properties[i];
               if (style[property]) {
-                target.setAttribute(attribute, parseInt(style[property], 10));
+                target.setAttribute(property, parseInt(style[property], 10));
                 style[property] = "";
               }
             }

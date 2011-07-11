@@ -90,9 +90,9 @@
       var formElements  = this.container.querySelectorAll(SELECTOR_FORM_ELEMENTS),
           i             = 0,
           length        = formElements.length,
-          clearInterval = function() { clearInterval(that.interval); };
+          _clearInterval = function() { clearInterval(that.interval); };
       for (; i<length; i++) {
-        dom.observe(formElements[i], "change", clearInterval);
+        dom.observe(formElements[i], "change", _clearInterval);
       }
 
       this._observed = true;

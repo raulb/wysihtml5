@@ -19,18 +19,18 @@
  *    wysihtml5.dom.copyStyles(["overflow-y", "width", "height"]).from(textarea).to(div).andTo(anotherDiv);
  *
  */
-(function(api) {
+(function(dom) {
   
   /**
-   * Mozilla and Opera recalculate the computed width when box-sizing: boder-box; is set
+   * Mozilla, WebKit and Opera recalculate the computed width when box-sizing: boder-box; is set
    * So if an element has "width: 200px; -moz-box-sizing: border-box; border: 1px;" then 
-   * it's computed css width will be 198px
+   * its computed css width will be 198px
    */
   var BOX_SIZING_PROPERTIES = ["-webkit-box-sizing", "-moz-box-sizing", "-ms-box-sizing", "box-sizing"];
   
   var shouldIgnoreBoxSizingBorderBox = function(element) {
     if (hasBoxSizingBorderBox(element)) {
-       return parseInt(api.getStyle("width").from(element), 10) < element.offsetWidth;
+       return parseInt(dom.getStyle("width").from(element), 10) < element.offsetWidth;
     }
     return false;
   };
@@ -39,13 +39,13 @@
     var i       = 0,
         length  = BOX_SIZING_PROPERTIES.length;
     for (; i<length; i++) {
-      if (api.getStyle(BOX_SIZING_PROPERTIES[i]).from(element) === "border-box") {
+      if (dom.getStyle(BOX_SIZING_PROPERTIES[i]).from(element) === "border-box") {
         return BOX_SIZING_PROPERTIES[i];
       }
     }
   };
   
-  api.copyStyles = function(stylesToCopy) {
+  dom.copyStyles = function(stylesToCopy) {
     return {
       from: function(element) {
         if (shouldIgnoreBoxSizingBorderBox(element)) {
@@ -58,16 +58,12 @@
             property;
         for (; i<length; i++) {
           property = stylesToCopy[i];
-          cssText += property + ":" + api.getStyle(property).from(element) + ";";
+          cssText += property + ":" + dom.getStyle(property).from(element) + ";";
         }
         
         return {
           to: function(element) {
-            /**
-             * Use static Element.setStyle method, since element is not
-             * necessarily prototype extended
-             */
-            api.setStyles(cssText).on(element);
+            dom.setStyles(cssText).on(element);
             return { andTo: arguments.callee };
           }
         };

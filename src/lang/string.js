@@ -2,6 +2,7 @@
   var WHITE_SPACE_START = /^\s+/,
       WHITE_SPACE_END   = /\s+$/;
   wysihtml5.lang.string = function(str) {
+    str = String(str);
     return {
       /**
        * @example
@@ -19,9 +20,22 @@
        */
       interpolate: function(vars) {
         for (var i in vars) {
-          str = str.replace(new RegExp("#{" + i + "}", "g"), vars[i]);
+          str = this.replace("#{" + i + "}").by(vars[i]);
         }
         return str;
+      },
+      
+      /**
+       * @example
+       *    wysihtml5.lang.string("Hello Tom").replace("Tom").with("Hans");
+       *    // => "Hello Hans"
+       */
+      replace: function(search) {
+        return {
+          by: function(replace) {
+            return str.split(search).join(replace);
+          }
+        }
       }
     };
   };

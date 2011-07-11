@@ -52,14 +52,14 @@ if (wysihtml5.browser.supported()) {
           textareaElement = that.textareaElement;
       ok(true, "Load callback triggered");
       ok(wysihtml5.dom.hasClass(document.body, "wysihtml5-supported"), "<body> received correct class name");
-      ok(!textareaElement.visible(), "Textarea not visible");
-      ok(iframeElement.visible(), "Editor iFrame is visible");
+      equals(textareaElement.style.display, "none", "Textarea not visible");
+      ok(iframeElement.style.display, "", "Editor iFrame is visible");
       equals(editor.currentView.name, "composer", "Current view is 'composer'");
       
       // Make textarea visible for a short amount of time, in order to calculate dimensions properly
       textareaElement.style.display = "";
       same(
-        [iframeElement.offsetHeight,    iframeElement.offsetWidth]
+        [iframeElement.offsetHeight,    iframeElement.offsetWidth],
         [textareaElement.offsetHeight,  textareaElement.offsetWidth],
         "Editor has the same dimensions as the original textarea"
       );
@@ -71,8 +71,8 @@ if (wysihtml5.browser.supported()) {
       equals(hiddenField.type, "hidden", "Hidden field is actually hidden");
       equals(textareaElement.nextSibling.nextSibling, iframeElement, "Editor iframe is inserted after the textarea");
       equals(composerElement.getAttribute("contentEditable"), "true", "Body element in iframe is editable");
-      equals(editor.textarea.element, textareaElement, "Textarea correctly set on editor instance");
-      equals(editor.composer.element, composerElement, "Textarea correctly set on editor instance");
+      equals(editor.textarea.element, textareaElement, "Textarea correctly available on editor instance");
+      equals(editor.composer.element, composerElement, "contentEditable element available on editor instance");
       equals(wysihtml5.dom.getStyle("font-style").from(composerElement), "italic", "Correct font-style applied to editor element");
       equals(composerElement.innerHTML.toLowerCase(), "hey tiff, what's up?", "Copied the initial textarea value to the editor");
       ok(wysihtml5.dom.hasClass(composerElement, "wysihtml5-editor"), "Editor element has correct class name");
@@ -417,7 +417,7 @@ if (wysihtml5.browser.supported()) {
         equals(html.toLowerCase(), input, "HTML passed into parser is equal to the one which just got inserted");
         equals(rules, parserRules, "Rules passed into parser are equal to those given to the editor");
         equals(context, that.getIframeElement().contentWindow.document, "Context passed into parser is equal the document object of the editor's iframe");
-        return html.stripScripts();
+        return html.replace(/\<script\>.*?\<\/script\>/gi, "");
       }
     });
     
@@ -457,7 +457,7 @@ if (wysihtml5.browser.supported()) {
         equals(composerElement.innerHTML.toLowerCase(), html, "Composer still has correct content");
         equals(textareaElement.value.toLowerCase(), html, "Textarea got correct value");
         start();
-      }, 0.5);
+      }, 500);
     });
   });
   
@@ -488,23 +488,6 @@ if (wysihtml5.browser.supported()) {
       equals(linkElements[1].getAttribute("rel"), "stylesheet");
       start();
     });
-  });
-  
-  
-  test("Instance Id", function() {
-    var textarea1 = this.textareaElement.clone(true),
-        textarea2 = this.textareaElement.clone(true);
-    
-    document.body.appendChild(textarea1);
-    document.body.appendChild(textarea2);
-    
-    var editor1 = new wysihtml5.Editor(textarea1),
-        editor2 = new wysihtml5.Editor(textarea2);
-    
-    ok(editor1._instanceId != editor2._instanceId, "Instance ids of two editors are not equal");
-    
-    textarea1.parentNode.removeChild(textarea1);
-    textarea2.parentNode.removeChild(textarea2);
   });
 }
 

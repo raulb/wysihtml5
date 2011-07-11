@@ -77,5 +77,7 @@ test("Advanced test observing within a sandboxed iframe", function() {
     QUnit.triggerEvent(element, "mousedown");
     
     start();
-  }).insertInto(document.body);
+  });
+  
+  sandbox.insertInto(document.body);
 });

@@ -53,7 +53,7 @@ wysihtml5.dom.getAsDom = (function() {
     if (typeof(html) === "object" && html.nodeType) {
       tempElement = context.createElement("div");
       tempElement.appendChild(html);
-    } else if (wysihtml5.browser.supportsHtml5Tags(context)) {
+    } else if (wysihtml5.browser.supportsHTML5Tags(context)) {
       tempElement = context.createElement("div");
       tempElement.innerHTML = html;
     } else {

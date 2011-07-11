@@ -133,9 +133,9 @@ wysihtml5.browser = (function() {
      * @param {Object} context The document object on which to check HTML5 support
      *
      * @example
-     *    wysihtml5.browser.supportsHtml5Tags(document);
+     *    wysihtml5.browser.supportsHTML5Tags(document);
      */
-    supportsHtml5Tags: function(context) {
+    supportsHTML5Tags: function(context) {
       var element = context.createElement("div"),
           html5   = "<article>foo</article>";
       element.innerHTML = html5;

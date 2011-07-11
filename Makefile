@@ -37,6 +37,7 @@ JS_FILES = lib/rangy/rangy-core.js \
   src/dom/text_content.js \
   src/quirks/clean_pasted_html.js \
   src/quirks/ensure_proper_clearing.js \
+  src/quirks/get_correct_inner_html.js \
   src/quirks/insert_line_break_on_return.js \
   src/quirks/redraw.js \
   src/selection/selection.js \

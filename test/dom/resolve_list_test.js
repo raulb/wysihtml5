@@ -5,8 +5,11 @@ module("wysihtml5.dom.resolveList", {
   
   resolveList: function(html) {
     var container = wysihtml5.dom.getAsDom(html);
+    document.body.appendChild(container);
     wysihtml5.dom.resolveList(container.firstChild);
-    return container.innerHTML;
+    var innerHTML = container.innerHTML;
+    container.parentNode.removeChild(container);
+    return innerHTML;
   },
 });
 

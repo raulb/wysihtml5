@@ -2,9 +2,9 @@ VERSION = $(shell cat version.txt)
 
 JS_OUTPUT = "dist/wysihtml5-${VERSION}.js"
 
-JS_FILES = lib/rangy/rangy-core.js \
+JS_FILES = src/wysihtml5.js \
+  lib/rangy/rangy-core.js \
   lib/base/base.js \
-  src/wysihtml5.js \
   src/browser.js \
   src/lang/array.js \
   src/lang/dispatcher.js \
@@ -70,6 +70,20 @@ JS_FILES = lib/rangy/rangy-core.js \
   src/commands/underline.js \
   src/editor.js
 
-all:
+all: bundle minify
+
+bundle:
+	@@echo "Bundling..."
+	@@touch ${JS_OUTPUT}
 	@@rm ${JS_OUTPUT}
 	@@cat ${JS_FILES} >> ${JS_OUTPUT}
+	@@cat ${JS_OUTPUT} | sed "s/@VERSION/${VERSION}/" > "${JS_OUTPUT}.tmp"
+	@@mv "${JS_OUTPUT}.tmp" ${JS_OUTPUT}
+
+minify:
+	@@echo "Minifying... (this requires node.js)"
+	@@node build/minify.js ${JS_OUTPUT}
+	@@echo "Done."
+
+unittest:
+	@@open test/index.html

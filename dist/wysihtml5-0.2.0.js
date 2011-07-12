@@ -1,4 +1,37 @@
-/**
+/*!
+ * wysihtml5 v0.2.0
+ * https://github.com/xing/wysihtml5
+ *
+ * Author: Christopher Blum (https://github.com/tiff)
+ *
+ * Copyright (C) 2011 XING AG
+ * Licensed under GNU General Public License
+ */
+var wysihtml5 = {
+  version: "0.2.0",
+  
+  // namespaces
+  commands:   {},
+  dom:        {},
+  quirks:     {},
+  toolbar:    {},
+  lang:       {},
+  selection:  {},
+  views:      {},
+  
+  INVISIBLE_SPACE: "\uFEFF",
+  
+  EMPTY_FUNCTION: function() {},
+  
+  ELEMENT_NODE: 1,
+  TEXT_NODE:    3,
+  
+  BACKSPACE_KEY:  8,
+  ENTER_KEY:      13,
+  ESCAPE_KEY:     27,
+  SPACE_KEY:      32,
+  DELETE_KEY:     46
+};/**
  * @license Rangy, a cross-browser JavaScript range and selection library
  * http://code.google.com/p/rangy/
  *
@@ -3097,31 +3130,7 @@ Base = Base.extend({
 	toString: function() {
 		return String(this.valueOf());
 	}
-});var wysihtml5 = {
-  version: "0.1.0",
-  
-  // namespaces
-  commands:   {},
-  dom:        {},
-  quirks:     {},
-  toolbar:    {},
-  lang:       {},
-  selection:  {},
-  views:      {},
-  
-  INVISIBLE_SPACE: "\uFEFF",
-  
-  EMPTY_FUNCTION: function() {},
-  
-  ELEMENT_NODE: 1,
-  TEXT_NODE:    3,
-  
-  BACKSPACE_KEY:  8,
-  ENTER_KEY:      13,
-  ESCAPE_KEY:     27,
-  SPACE_KEY:      32,
-  DELETE_KEY:     46
-};/**
+});/**
  * Detect browser support for specific features
  *
  * @author Christopher Blum <christopher.blum@xing.com>
@@ -4146,7 +4155,7 @@ wysihtml5.dom.getParentElement = (function() {
  */
 wysihtml5.dom.getStyle = (function() {
   var stylePropertyMapping = {
-        "float": ("styleFloat" in document.createElement("div")) ? "styleFloat" : "cssFloat"
+        "float": ("styleFloat" in document.createElement("div").style) ? "styleFloat" : "cssFloat"
       },
       REG_EXP_CAMELIZE = /\-[a-z]/g;
   

@@ -10,7 +10,7 @@
  */
 wysihtml5.dom.getStyle = (function() {
   var stylePropertyMapping = {
-        "float": ("styleFloat" in document.createElement("div")) ? "styleFloat" : "cssFloat"
+        "float": ("styleFloat" in document.createElement("div").style) ? "styleFloat" : "cssFloat"
       },
       REG_EXP_CAMELIZE = /\-[a-z]/g;
   

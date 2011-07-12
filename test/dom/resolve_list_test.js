@@ -10,7 +10,7 @@ module("wysihtml5.dom.resolveList", {
     var innerHTML = container.innerHTML;
     container.parentNode.removeChild(container);
     return innerHTML;
-  },
+  }
 });
 
 test("Basic tests", function() {

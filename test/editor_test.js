@@ -1,5 +1,5 @@
 if (wysihtml5.browser.supported()) {
-  module("wysihtml5.Editor - compatible", {
+  module("wysihtml5.Editor", {
     setup: function() {
       wysihtml5.dom.insertCSS([
         "#wysihtml5-test-textarea { width: 200px; height: 100px; margin-top: 5px; font-style: italic; border: 2px solid red; }",
@@ -490,62 +490,3 @@ if (wysihtml5.browser.supported()) {
     });
   });
 }
-
-
-// -------------- TEST WHAT HAPPENS WHEN EDITOR IS NOT COMPATIBLE WITH BROWSER -------------- \\
-module("wysihtml5.Editor - incompatible", {
-  setup: function() {
-    this.originalSupportCheck = wysihtml5.browser.supported;
-    wysihtml5.browser.supported = function() { return false; };
-    
-    this.textareaElement = document.createElement("textarea");
-    document.body.appendChild(this.textareaElement);
-  },
-  
-  teardown: function() {
-    wysihtml5.browser.supported = this.originalSupportCheck;
-    this.textareaElement.parentNode.removeChild(this.textareaElement);
-  }
-});
-
-
-test("Basic test", function() {
-  expect(12);
-  stop(2000);
-  
-  var that = this;
-  
-  var editor = new wysihtml5.Editor(this.textareaElement);
-  editor.observe("load", function() {
-    ok(true, "'load' event correctly triggered");
-    ok(!wysihtml5.dom.hasClass(document.body, "wysihtml5-supported"), "<body> didn't receive the 'wysihtml5-supported' class");
-    ok(!editor.isCompatible(), "isCompatible returns false when rich text editing is not correctly supported in the current browser");
-    equals(that.textareaElement.style.display, "", "Textarea is visible");
-    ok(!document.querySelectorAll("iframe.wysihtml5-sandbox").length, "No iframe has been inserted into the dom");
-    ok(!document.querySelectorAll("input[name='_wysihtml5_mode']").length, "No hidden field has been inserted into the dom");
-    ok(!editor.composer, "Composer not initialized");
-    
-    var html = "foobar<br>";
-    editor.setValue(html);
-    equals(that.textareaElement.value, html);
-    equals(editor.getValue(), html);
-    editor.clear();
-    equals(that.textareaElement.value, "");
-    
-    editor.observe("focus", function() {
-      ok(true, "Generic 'focus' event fired");
-    });
-    
-    editor.observe("focus:textarea", function() {
-      ok(true, "Specific 'focus:textarea' event fired");
-    });
-    
-    editor.observe("focus:composer", function() {
-      ok(false, "Specific 'focus:composer' event fired, and that's wrong, there shouldn't be a composer element/view");
-    });
-    
-    QUnit.triggerEvent(that.textareaElement, wysihtml5.browser.supportsEvent("focusin") ? "focusin" : "focus");
-    
-    start();
-  });
-});

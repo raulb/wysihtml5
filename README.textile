@@ -1,4 +1,4 @@
-h1. wysihtml5 0.1.0
+h1. wysihtml5 0.2.0
 
 wysihtml5 is an open source rich text editor based on HTML5 technology and the progressive-enhancement approach.
 It uses a sophisticated security concept and aims to generate fully valid HTML5 markup by preventing unmaintainable tag-soups and inline-styles.
@@ -112,6 +112,20 @@ copied to the hidden <code><textarea></code>)
 # Observes the form's "onsubmit" and "onreset" events and simulates their
 behavior on the iframe's <code><body></code>
 # Checks whether a toolbar is given and sets event listeners on it's link
+
+h2. How to build your own wysihtml5 files
+
+Clone and build the js file:
+<code>
+  git clone git://github.com/xing/wysihtml5.git
+  cd wysihtml5
+  make
+</code>
+
+Run the unit tests:
+<code>
+  make unittest
+</code>
 
 h2. Research Material
 

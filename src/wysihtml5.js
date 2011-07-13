@@ -1,11 +1,12 @@
-/*!
- * wysihtml5 v@VERSION
+/**
+ * @license wysihtml5 v@VERSION
  * https://github.com/xing/wysihtml5
  *
  * Author: Christopher Blum (https://github.com/tiff)
  *
  * Copyright (C) 2011 XING AG
  * Licensed under GNU General Public License
+ *
  */
 var wysihtml5 = {
   version: "@VERSION",

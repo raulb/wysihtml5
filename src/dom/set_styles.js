@@ -1,17 +1,18 @@
 wysihtml5.dom.setStyles = function(styles) {
-  var styleMapping = {
-    styleFloat: "cssFloat",
-    "float":    "cssFloat" 
-  };
   return {
     on: function(element) {
+      var style = element.style;
       if (typeof(styles) === "string") {
-        element.style.cssText += ";" + styles;
+        style.cssText += ";" + styles;
         return;
       }
       for (var i in styles) {
-        i = styleMapping[i] || i;
-        element.style[i] = styles[i];
+        if (i === "float") {
+          style.cssFloat = styles[i];
+          style.styleFloat = styles[i];
+        } else {
+          style[i] = styles[i];
+        }
       }
     }
   };

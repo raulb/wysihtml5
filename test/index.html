@@ -18,11 +18,16 @@
 <script>
   if (wysihtml5.browser.supported()) {
     document.write(
-      '<script src="assert/html_equals_test.js"><\/script>'                +
+      '<script src="assert/html_equals_test.js"><\/script>'               +
+      '<script src="lang/array_test.js"><\/script>'                       +
+      '<script src="lang/object_test.js"><\/script>'                      +
+      '<script src="lang/string_test.js"><\/script>'                      +
       '<script src="dom/auto_link_test.js"><\/script>'                    +
+      '<script src="dom/contains_test.js"><\/script>'                     +
       '<script src="dom/convert_to_list_test.js"><\/script>'              +
       '<script src="dom/copy_styles_test.js"><\/script>'                  +
       '<script src="dom/copy_attributes_test.js"><\/script>'              +
+      '<script src="dom/delegate_test.js"><\/script>'                     +
       '<script src="dom/sandbox_test.js"><\/script>'                      +
       '<script src="dom/observe_test.js"><\/script>'                      +
       '<script src="dom/get_as_dom_test.js"><\/script>'                   +
@@ -33,6 +38,8 @@
       '<script src="dom/insert_css_test.js"><\/script>'                   +
       '<script src="dom/resolve_list_test.js"><\/script>'                 +
       '<script src="dom/rename_element_test.js"><\/script>'               +
+      '<script src="dom/set_styles_test.js"><\/script>'                   +
+      '<script src="dom/set_attributes_test.js"><\/script>'               +
       '<script src="dom/parse_test.js"><\/script>'                        +
       '<script src="quirks/clean_pasted_html_test.js"><\/script>'         +
       '<script src="editor_test.js"><\/script>'

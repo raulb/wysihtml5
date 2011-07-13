@@ -3545,6 +3545,11 @@ wysihtml5.browser = (function() {
   }
 });wysihtml5.lang.object = function(obj) {
   return {
+    /**
+     * @example
+     *    wysihtml5.lang.object({ foo: 1, bar: 1 }).merge({ bar: 2, baz: 3 }).get();
+     *    // => { foo: 1, bar: 2, baz: 3 }
+     */
     merge: function(otherObj) {
       for (var i in otherObj) {
         obj[i] = otherObj[i];
@@ -3556,6 +3561,11 @@ wysihtml5.browser = (function() {
       return obj;
     },
     
+    /**
+     * @example
+     *    wysihtml5.lang.object({ foo: 1 }).clone();
+     *    // => { foo: 1 }
+     */
     clone: function() {
       var newObj = {},
           i;
@@ -3565,6 +3575,11 @@ wysihtml5.browser = (function() {
       return newObj;
     },
     
+    /**
+     * @example
+     *    wysihtml5.lang.object([]).isArray();
+     *    // => true
+     */
     isArray: function() {
       return Object.prototype.toString.call(obj) === "[object Array]";
     }
@@ -3985,7 +4000,15 @@ wysihtml5.dom.copyAttributes = function(attributesToCopy) {
       }
     };
   };
-})(wysihtml5.dom);(function(wysihtml5) {
+})(wysihtml5.dom);/**
+ * Event Delegation
+ *
+ * @example
+ *    wysihtml5.dom.delegate(document.body, "a", "click", function() {
+ *      // foo
+ *    });
+ */
+(function(wysihtml5) {
   
   wysihtml5.dom.delegate = function(container, selector, eventName, handler) {
     return wysihtml5.dom.observe(container, eventName, function(event) {
@@ -5236,19 +5259,20 @@ wysihtml5.dom.replaceWithChildNodes = function(node) {
     }
   };
 })();wysihtml5.dom.setStyles = function(styles) {
-  var styleMapping = {
-    styleFloat: "cssFloat",
-    "float":    "cssFloat" 
-  };
   return {
     on: function(element) {
+      var style = element.style;
       if (typeof(styles) === "string") {
-        element.style.cssText += ";" + styles;
+        style.cssText += ";" + styles;
         return;
       }
       for (var i in styles) {
-        i = styleMapping[i] || i;
-        element.style[i] = styles[i];
+        if (i === "float") {
+          style.cssFloat = styles[i];
+          style.styleFloat = styles[i];
+        } else {
+          style[i] = styles[i];
+        }
       }
     }
   };

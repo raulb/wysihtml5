@@ -1,3 +1,11 @@
+/**
+ * Event Delegation
+ *
+ * @example
+ *    wysihtml5.dom.delegate(document.body, "a", "click", function() {
+ *      // foo
+ *    });
+ */
 (function(wysihtml5) {
   
   wysihtml5.dom.delegate = function(container, selector, eventName, handler) {

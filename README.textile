@@ -1,8 +1,9 @@
 h1. wysihtml5 0.2.0
 
 wysihtml5 is an open source rich text editor based on HTML5 technology and the progressive-enhancement approach.
-It uses a sophisticated security concept and aims to generate fully valid HTML5 markup by preventing unmaintainable tag-soups and inline-styles.
-The editor is already in production use on "XING.com":https://www.xing.com - a social network with more than 10 million members.
+It uses a sophisticated security concept and aims to generate fully valid HTML5 markup by preventing unmaintainable tag soups and inline styles.
+The code is completely library agnostic: No jQuery, Prototype or similar is required.
+The editor is already in use on "XING.com":https://www.xing.com - a social network with more than 10 million members.
 
 h2. Features:
 

@@ -57,7 +57,7 @@
     
     var wrapper = document.createElement("div");
     
-    wysihtml5.lang.object(wrapperStyle).merge({
+    wysihtml5.lang.object(wrapperStyles).merge({
       width:  link.offsetWidth  + "px",
       height: link.offsetHeight + "px"
     });
@@ -77,7 +77,7 @@
       input.value = "";
     });
     
-    dom.observe("click", function(event) {
+    dom.observe(input, "click", function(event) {
       if (dom.hasClass(link, "wysihtml5-command-disabled")) {
         event.preventDefault();
       }

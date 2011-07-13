@@ -155,7 +155,7 @@
 
       // Simulate html5 autofocus on contentEditable element
       if (this.textarea.element.hasAttribute("autofocus") || document.querySelector(":focus") == this.textarea.element) {
-        setTimeout(function() { that.composer.focus(); }, 100);
+        setTimeout(function() { that.focus(); }, 100);
       }
 
       // IE and Opera insert paragraphs on return instead of line breaks

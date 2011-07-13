@@ -6686,7 +6686,7 @@ wysihtml5.views.View = Base.extend(
 
       // Simulate html5 autofocus on contentEditable element
       if (this.textarea.element.hasAttribute("autofocus") || document.querySelector(":focus") == this.textarea.element) {
-        setTimeout(function() { that.composer.focus(); }, 100);
+        setTimeout(function() { that.focus(); }, 100);
       }
 
       // IE and Opera insert paragraphs on return instead of line breaks
@@ -7565,7 +7565,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
     
     var wrapper = document.createElement("div");
     
-    wysihtml5.lang.object(wrapperStyle).merge({
+    wysihtml5.lang.object(wrapperStyles).merge({
       width:  link.offsetWidth  + "px",
       height: link.offsetHeight + "px"
     });
@@ -7585,7 +7585,7 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
       input.value = "";
     });
     
-    dom.observe("click", function(event) {
+    dom.observe(input, "click", function(event) {
       if (dom.hasClass(link, "wysihtml5-command-disabled")) {
         event.preventDefault();
       }

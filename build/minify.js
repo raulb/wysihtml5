@@ -28,7 +28,7 @@ function post(code, callback) {
       "Content-Length": postData.length
     }
   };
-  
+
   // Set up the request
   var request = http.request(postOptions, function(response) {
     var responseText = [];
@@ -40,7 +40,7 @@ function post(code, callback) {
       callback(responseText.join(""));
     });
   });
-  
+
   // Post the data
   request.write(postData);
   request.end();

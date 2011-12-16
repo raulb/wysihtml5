@@ -2,11 +2,11 @@ module("wysihtml5 - Incompatible", {
   setup: function() {
     this.originalSupportCheck = wysihtml5.browser.supported;
     wysihtml5.browser.supported = function() { return false; };
-    
+
     this.textareaElement = document.createElement("textarea");
     document.body.appendChild(this.textareaElement);
   },
-  
+
   teardown: function() {
     wysihtml5.browser.supported = this.originalSupportCheck;
     this.textareaElement.parentNode.removeChild(this.textareaElement);
@@ -16,13 +16,13 @@ module("wysihtml5 - Incompatible", {
 
 asyncTest("Basic test", function() {
   expect(12);
-  
+
   var that = this;
-  
+
   var oldIframesLength = document.getElementsByTagName("iframe").length;
-  
+
   var oldInputsLength = document.getElementsByTagName("input").length;
-  
+
   var editor = new wysihtml5.Editor(this.textareaElement);
   editor.observe("load", function() {
     ok(true, "'load' event correctly triggered");
@@ -30,31 +30,31 @@ asyncTest("Basic test", function() {
     ok(!editor.isCompatible(), "isCompatible returns false when rich text editing is not correctly supported in the current browser");
     equals(that.textareaElement.style.display, "", "Textarea is visible");
     ok(!editor.composer, "Composer not initialized");
-    
+
     equals(document.getElementsByTagName("iframe").length, oldIframesLength, "No hidden field has been inserted into the dom");
     equals(document.getElementsByTagName("input").length,  oldInputsLength,  "Composer not initialized");
-    
+
     var html = "foobar<br>";
     editor.setValue(html);
     equals(that.textareaElement.value, html);
     equals(editor.getValue(), html);
     editor.clear();
     equals(that.textareaElement.value, "");
-    
+
     editor.observe("focus", function() {
       ok(true, "Generic 'focus' event fired");
     });
-    
+
     editor.observe("focus:textarea", function() {
       ok(true, "Specific 'focus:textarea' event fired");
     });
-    
+
     editor.observe("focus:composer", function() {
       ok(false, "Specific 'focus:composer' event fired, and that's wrong, there shouldn't be a composer element/view");
     });
-    
+
     QUnit.triggerEvent(that.textareaElement, wysihtml5.browser.supportsEvent("focusin") ? "focusin" : "focus");
-    
+
     start();
   });
 });

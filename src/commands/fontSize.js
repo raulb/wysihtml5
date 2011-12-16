@@ -6,7 +6,7 @@
 (function(wysihtml5) {
   var undef,
       REG_EXP = /wysiwyg-font-size-[a-z]+/g;
-  
+
   wysihtml5.commands.fontSize = {
     exec: function(element, command, size) {
       return wysihtml5.commands.formatInline.exec(element, command, "span", "wysiwyg-font-size-" + size, REG_EXP);

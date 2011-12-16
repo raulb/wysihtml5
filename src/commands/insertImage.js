@@ -1,11 +1,11 @@
 (function(wysihtml5) {
   var NODE_NAME = "IMG";
-  
+
   wysihtml5.commands.insertImage = {
     /**
      * Inserts an <img>
      * If selection is already an image link, it removes it
-     * 
+     *
      * @example
      *    // either ...
      *    wysihtml5.commands.insertImage.exec(element, "insertImage", "http://www.google.de/logo.jpg");

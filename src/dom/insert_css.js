@@ -1,6 +1,6 @@
 wysihtml5.dom.insertCSS = function(rules) {
   rules = rules.join("\n");
-  
+
   return {
     into: function(doc) {
       var head         = doc.head || doc.getElementsByTagName("head")[0],

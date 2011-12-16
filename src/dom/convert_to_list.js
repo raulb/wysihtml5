@@ -31,17 +31,17 @@ wysihtml5.dom.convertToList = (function() {
     list.appendChild(listItem);
     return listItem;
   }
-  
+
   function _createList(doc, type) {
     return doc.createElement(type);
   }
-  
+
   function convertToList(element, listType) {
     if (element.nodeName === "UL" || element.nodeName === "OL" || element.nodeName === "MENU") {
       // Already a list
       return element;
     }
-    
+
     var doc               = element.ownerDocument,
         list              = _createList(doc, listType),
         childNodes        = wysihtml5.lang.array(element.childNodes).get(),
@@ -56,7 +56,7 @@ wysihtml5.dom.convertToList = (function() {
       childNode       = childNodes[i];
       isBlockElement  = wysihtml5.dom.getStyle("display").from(childNode) === "block";
       isLineBreak     = childNode.nodeName === "BR";
-      
+
       if (isBlockElement) {
         // Append blockElement to current <li> if empty, otherwise create a new one
         currentListItem = currentListItem.firstChild ? _createListItem(doc, list) : currentListItem;
@@ -64,19 +64,19 @@ wysihtml5.dom.convertToList = (function() {
         currentListItem = null;
         continue;
       }
-      
+
       if (isLineBreak) {
         // Only create a new list item in the next iteration when the current one has already content
         currentListItem = currentListItem.firstChild ? null : currentListItem;
         continue;
       }
-      
+
       currentListItem.appendChild(childNode);
     }
-    
+
     element.parentNode.replaceChild(list, element);
     return list;
   }
-  
+
   return convertToList;
 })();

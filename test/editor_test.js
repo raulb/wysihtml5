@@ -10,13 +10,13 @@ if (wysihtml5.browser.supported()) {
       this.textareaElement.id     = "wysihtml5-test-textarea";
       this.textareaElement.title  = "Please enter your foo";
       this.textareaElement.value  = "hey tiff, what's up?";
-      
+
       this.form = document.createElement("form");
       this.form.onsubmit = function() { return false; };
       this.form.appendChild(this.textareaElement);
-      
+
       this.originalBodyClassName = document.body.className;
-      
+
       document.body.appendChild(this.form);
     },
 
@@ -38,12 +38,12 @@ if (wysihtml5.browser.supported()) {
       return iframes[iframes.length - 1];
     }
   });
-  
+
   asyncTest("Basic test", function() {
     expect(16);
-    
+
     var that = this;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement);
     editor.observe("load", function() {
       var iframeElement   = that.getIframeElement(),
@@ -54,7 +54,7 @@ if (wysihtml5.browser.supported()) {
       equals(textareaElement.style.display, "none", "Textarea not visible");
       ok(iframeElement.style.display, "", "Editor iFrame is visible");
       equals(editor.currentView.name, "composer", "Current view is 'composer'");
-      
+
       // Make textarea visible for a short amount of time, in order to calculate dimensions properly
       textareaElement.style.display = "";
       same(
@@ -63,7 +63,7 @@ if (wysihtml5.browser.supported()) {
         "Editor has the same dimensions as the original textarea"
       );
       textareaElement.style.display = "none";
-      
+
       var hiddenField = textareaElement.nextSibling;
       equals(hiddenField.name, "_wysihtml5_mode", "Hidden field has correct name");
       equals(hiddenField.value, "1", "Hidden field has correct value");
@@ -75,7 +75,7 @@ if (wysihtml5.browser.supported()) {
       equals(wysihtml5.dom.getStyle("font-style").from(composerElement), "italic", "Correct font-style applied to editor element");
       equals(composerElement.innerHTML.toLowerCase(), "hey tiff, what's up?", "Copied the initial textarea value to the editor");
       ok(wysihtml5.dom.hasClass(composerElement, "wysihtml5-editor"), "Editor element has correct class name");
-      
+
       start();
     });
   });
@@ -83,13 +83,13 @@ if (wysihtml5.browser.supported()) {
 
   asyncTest("Check setting of name as class name on iframe and iframe's body", function() {
     expect(4);
-    
+
     this.textareaElement.className = "death-star";
-    
+
     var that   = this,
         name   = "star-wars-input",
         editor = new wysihtml5.Editor(this.textareaElement, { name: "star-wars-input" });
-    
+
     editor.observe("load", function() {
       var iframeElement   = that.getIframeElement(),
           composerElement = that.getComposerElement(),
@@ -105,16 +105,16 @@ if (wysihtml5.browser.supported()) {
 
   asyncTest("Check textarea with box-sizing: border-box;", function() {
     expect(1);
-    
+
     var that = this;
-    
+
     wysihtml5.dom.setStyles({
       MozBoxSizing:     "border-box",
       WebkitBoxSizing:  "border-box",
       MsBoxSizing:      "border-box",
       boxSizing:        "border-box"
     }).on(this.textareaElement);
-  
+
     var editor = new wysihtml5.Editor(this.textareaElement);
     editor.observe("load", function() {
       // Make textarea visible for a short amount of time, in order to calculate dimensions properly
@@ -125,7 +125,7 @@ if (wysihtml5.browser.supported()) {
         "Editor has the same dimensions as the original textarea"
       );
       that.textareaElement.style.display = "none";
-    
+
       start();
     });
   });
@@ -133,9 +133,9 @@ if (wysihtml5.browser.supported()) {
 
   asyncTest("Check whether attributes are copied", function() {
     expect(1);
-    
+
     var that = this;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement);
     editor.observe("load", function() {
       equals(that.getComposerElement().title, that.textareaElement.title, "Editor got attributes copied over from textarea");
@@ -146,43 +146,43 @@ if (wysihtml5.browser.supported()) {
 
   asyncTest("Check events", function() {
     expect(8);
-    
+
     var that = this;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement);
-    
+
     editor.observe("beforeload", function() {
       ok(true, "'beforeload' event correctly fired");
     });
-    
+
     editor.observe("load", function() {
       var composerElement = that.getComposerElement(),
           iframeElement   = that.getIframeElement();
-      
+
       editor.observe("focus", function() {
         ok(true, "'focus' event correctly fired");
       });
-      
+
       editor.observe("blur", function() {
         ok(true, "'blur' event correctly fired");
       });
-      
+
       editor.observe("change", function() {
         ok(true, "'change' event correctly fired");
       });
-      
+
       editor.observe("paste", function() {
         ok(true, "'paste' event correctly fired");
       });
-      
+
       editor.observe("drop", function() {
         ok(true, "'drop' event correctly fired");
       });
-      
+
       editor.observe("custom_event", function() {
         ok(true, "'custom_event' correctly fired");
       });
-      
+
       QUnit.triggerEvent(composerElement, "focus");
       // Modify innerHTML in order to force 'change' event to trigger onblur
       composerElement.innerHTML = "foobar";
@@ -191,9 +191,9 @@ if (wysihtml5.browser.supported()) {
       equals(wysihtml5.dom.getStyle("margin-top").from(iframeElement), "5px", ":focus styles are correctly unset");
       QUnit.triggerEvent(composerElement, "paste");
       QUnit.triggerEvent(composerElement, "drop");
-      
+
       editor.fire("custom_event");
-      
+
       // Delay teardown in order to avoid unwanted js errors caused by a too early removed sandbox iframe
       // which then causes js errors in Safari 5
       setTimeout(function() { start(); }, 100);
@@ -203,77 +203,77 @@ if (wysihtml5.browser.supported()) {
 
   asyncTest("Check sync (basic)", function() {
     expect(1);
-    
+
     var that = this;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement);
     editor.observe("load", function() {
       var html = "<p>hello foobar, what up?</p>";
       that.getComposerElement().innerHTML = html;
-    
+
       setTimeout(function() {
         equals(that.textareaElement.value.toLowerCase(), html.toLowerCase(), "Editor content got correctly copied over to original textarea");
         start();
       }, 500);
     });
   });
-  
-  
+
+
   asyncTest("Check sync (advanced)", function() {
     expect(5);
-    
+
     var that = this;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement, {
       parserRules: { tags: { "strong": true } }
     });
-    
+
     editor.observe("load", function() {
       var html = "<strong>timmay!</strong>",
           composerElement = that.getComposerElement();
       composerElement.innerHTML = html;
-      
+
       setTimeout(function() {
         equals(that.textareaElement.value.toLowerCase(), html.toLowerCase(), "Editor content got correctly copied over to original textarea");
-        
+
         composerElement.innerHTML = "<font color=\"red\">hey </font><strong>helen!</strong>";
         editor.fire("change_view", "textarea");
         equals(that.textareaElement.value.toLowerCase(), "hey <strong>helen!</strong>", "Editor got immediately copied over to textarea after switching the view");
-        
+
         that.textareaElement.value = "<i>hey </i><strong>richard!</strong>";
         editor.fire("change_view", "composer");
         equals(composerElement.innerHTML.toLowerCase(), "hey <strong>richard!</strong>", "Textarea sanitized and copied over it's value to the editor after switch");
-        
+
         composerElement.innerHTML = "<i>hey </i><strong>timmay!</strong>";
         QUnit.triggerEvent(that.form, "submit");
         equals(that.textareaElement.value.toLowerCase(), "hey <strong>timmay!</strong>", "Textarea gets the sanitized content of the editor onsubmit");
-        
+
         setTimeout(function() {
           that.form.reset();
-          
+
           // Timeout needed since reset() isn't executed synchronously
           setTimeout(function() {
             equals(wysihtml5.dom.getTextContent(composerElement), "", "Editor is empty after reset");
             start();
           }, 100);
-          
+
         }, 500);
-        
+
       }, 500);
-      
+
     });
   });
-  
-  
+
+
   asyncTest("Check placeholder", function() {
     expect(13);
-    
+
     var that = this;
-    
+
     var placeholderText = "enter text ...";
     this.textareaElement.value = "";
     this.textareaElement.setAttribute("placeholder", "enter text ...");
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement);
     editor.observe("load", function() {
       var composerElement = that.getComposerElement();
@@ -299,73 +299,73 @@ if (wysihtml5.browser.supported()) {
       editor.fire("blur:composer");
       equals(composerElement.innerHTML.toLowerCase(), html, "HTML hasn't been cleared even though the innerText and textContent properties indicate empty content.");
       ok(!wysihtml5.dom.hasClass(composerElement, "placeholder"), "Editor hasn't got 'placeholder' css class");
-      
+
       setTimeout(function() {
         that.form.reset();
-        
+
         // Timeout needed since reset() isn't executed synchronously
         setTimeout(function() {
           equals(wysihtml5.dom.getTextContent(composerElement), placeholderText, "After form reset the editor has the placeholder as content");
           start();
         }, 100);
-        
+
       }, 500);
     });
   });
-  
-  
+
+
   asyncTest("Check public api", function() {
     expect(14);
-    
+
     var that = this;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement, {
       parserRules:        { tags: { p: { rename_tag: "div" } } },
       bodyClassName:      "editor-is-supported",
       composerClassName:  "editor"
     });
-    
+
     editor.observe("load", function() {
       ok(editor.isCompatible(), "isCompatible() returns correct value");
       ok(wysihtml5.dom.hasClass(document.body, "editor-is-supported"), "<body> received correct class name");
-      
+
       var composerElement = that.getComposerElement();
       editor.clear();
       equals(wysihtml5.dom.getTextContent(composerElement), "", "Editor empty after calling 'clear'");
       ok(wysihtml5.dom.hasClass(composerElement, "editor"), "Composer element has correct class name");
-      
+
       var html = "hello <strong>foo</strong>!";
       editor.setValue(html);
       equals(composerElement.innerHTML.toLowerCase(), html, "Editor content correctly set after calling 'setValue'");
       ok(!editor.isEmpty(), "'isEmpty' returns correct value when the composer element isn't actually empty");
-      
+
       var value = editor.getValue();
       equals(value.toLowerCase(), html, "Editor content correctly returned after calling 'getValue'");
-      
+
       editor.clear();
       value = editor.getValue();
       equals(value, "");
       ok(editor.isEmpty(), "'isEmpty' returns correct value when the composer element is actually empty");
-      
+
       equals(editor.parse("<p>foo</p>").toLowerCase(), "<div>foo</div>", "'parse' returns correct value");
-      
+
       // Check disable/enable
       editor.disable();
       ok(!composerElement.getAttribute("contentEditable"), "When disabled the composer hasn't the contentEditable attribute");
       equals(composerElement.getAttribute("disabled"), "disabled", "When disabled the composer has the disabled=\"disabled\" attribute");
-      
+
       editor.enable();
       equals(composerElement.getAttribute("contentEditable"), "true", "After enabling the editor the contentEditable property is true");
       ok(!composerElement.getAttribute("disabled"), "After enabling the disabled attribute is unset");
-      
+
       start();
     });
   });
-  
-  
+
+
   asyncTest("Parser (default parser method with parserRules as object", function() {
     expect(2);
-    
+
     var parserRules = {
       tags: {
         div: true,
@@ -374,14 +374,14 @@ if (wysihtml5.browser.supported()) {
         script: undefined
       }
     };
-    
+
     var input   = "<p>foobar</p>",
         output  = "<div>foobar</div>";
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement, {
       parserRules: parserRules
     });
-    
+
     editor.observe("load", function() {
       equals(editor.config.parserRules, parserRules, "Parser rules correctly set on config object");
       // Invoke parsing via second parameter of setValue()
@@ -390,16 +390,16 @@ if (wysihtml5.browser.supported()) {
       start();
     });
   });
-  
-  
+
+
   asyncTest("Parser (custom parser method with parserRules as object", function() {
     expect(7);
-    
+
     var that        = this,
         parserRules = { script: undefined },
         input       = this.textareaElement.value,
         output      = input;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement, {
       parserRules: parserRules,
       parser:      function(html, rules, context) {
@@ -409,38 +409,38 @@ if (wysihtml5.browser.supported()) {
         return html.replace(/\<script\>.*?\<\/script\>/gi, "");
       }
     });
-    
+
     editor.observe("load", function() {
       input   = "<p>foobar</p><script>alert(1);</script>";
       output  = "<p>foobar</p>";
-      
+
       // Invoke parsing via second parameter of setValue()
       editor.setValue(input, true);
       equals(editor.getValue().toLowerCase(), output, "HTML got correctly parsed within setValue()");
-      
+
       start();
     });
   });
-  
-  
+
+
   asyncTest("Inserting an element which causes the textContent/innerText of the contentEditable element to be empty works correctly", function() {
     expect(2);
-    
+
     var that = this;
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement);
     editor.observe("load", function() {
       var html            = '<img>',
           composerElement = that.getComposerElement(),
           textareaElement = that.textareaElement;
       composerElement.innerHTML = html;
-      
+
       // Fire events that could cause a change in the composer
       QUnit.triggerEvent(composerElement, "keypress");
       QUnit.triggerEvent(composerElement, "keyup");
       QUnit.triggerEvent(composerElement, "cut");
       QUnit.triggerEvent(composerElement, "blur");
-      
+
       setTimeout(function() {
         equals(composerElement.innerHTML.toLowerCase(), html, "Composer still has correct content");
         equals(textareaElement.value.toLowerCase(), html, "Textarea got correct value");
@@ -448,22 +448,22 @@ if (wysihtml5.browser.supported()) {
       }, 500);
     });
   });
-  
-  
+
+
   asyncTest("Check for stylesheets", function() {
     expect(5);
-    
+
     var that = this;
-    
+
     var stylesheetUrls = [
       "http://yui.yahooapis.com/2.8.2r1/build/reset/reset-min.css",
       "http://yui.yahooapis.com/2.8.0/build/reset/reset-min.css"
     ];
-    
+
     var editor = new wysihtml5.Editor(this.textareaElement, {
       stylesheets: stylesheetUrls
     });
-    
+
     editor.observe("load", function() {
       var iframeElement = that.getIframeElement(),
           iframeDoc     = iframeElement.contentWindow.document,

@@ -15,23 +15,23 @@
  *    var coloredElement = wysihtml5.dom.getParentElement(myTextNode, { nodeName: "SPAN", className: "wysiwyg-color-red", classRegExp: /wysiwyg-color-[a-z]/g });
  */
 wysihtml5.dom.getParentElement = (function() {
-  
+
   function _isSameNodeName(nodeName, desiredNodeNames) {
     if (!desiredNodeNames || !desiredNodeNames.length) {
       return true;
     }
-    
+
     if (typeof(desiredNodeNames) === "string") {
       return nodeName === desiredNodeNames;
     } else {
       return wysihtml5.lang.array(desiredNodeNames).contains(nodeName);
     }
   }
-  
+
   function _isElement(node) {
     return node.nodeType === wysihtml5.ELEMENT_NODE;
   }
-  
+
   function _hasClassName(element, className, classRegExp) {
     var classNames = (element.className || "").match(classRegExp) || [];
     if (!className) {
@@ -39,7 +39,7 @@ wysihtml5.dom.getParentElement = (function() {
     }
     return classNames[classNames.length - 1] === className;
   }
-  
+
   function _getParentElementWithNodeName(node, nodeName, levels) {
     while (levels-- && node && node.nodeName !== "BODY") {
       if (_isSameNodeName(node.nodeName, nodeName)) {
@@ -49,7 +49,7 @@ wysihtml5.dom.getParentElement = (function() {
     }
     return null;
   }
-  
+
   function _getParentElementWithNodeNameAndClassName(node, nodeName, className, classRegExp, levels) {
     while (levels-- && node && node.nodeName !== "BODY") {
       if (_isElement(node) &&
@@ -61,7 +61,7 @@ wysihtml5.dom.getParentElement = (function() {
     }
     return null;
   }
-  
+
   return function(node, matchingSet, levels) {
     levels = levels || 50; // Go max 50 nodes upwards from current node
     if (matchingSet.className || matchingSet.classRegExp) {

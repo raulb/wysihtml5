@@ -11,7 +11,7 @@ if ("querySelector" in document || wysihtml5.browser.supportsNativeGetElementsBy
 
   asyncTest("Basic test", function() {
     expect(3);
-    
+
     new wysihtml5.dom.Sandbox(function(sandbox) {
       var doc         = sandbox.getDocument(),
           tempElement = doc.createElement("i");

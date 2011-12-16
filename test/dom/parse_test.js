@@ -60,13 +60,13 @@ if (wysihtml5.browser.supported()) {
       "<span>foo</span>",
       "Stripped out comments"
     );
-    
+
     this.equals(
       this.sanitize("<article>foo</article>", { tags: { article: true } }),
       "<article>foo</article>",
       "Check html5 tags"
     );
-    
+
     this.equals(
       this.sanitize("<!DOCTYPE html><p>html5 doctype</p>", { tags: { p: true } }),
       "<p>html5 doctype</p>",
@@ -114,47 +114,47 @@ if (wysihtml5.browser.supported()) {
     var rules = {
       tags: { p: true, span: true, div: true }
     };
-    
+
     var result = this.sanitize('<SPAN><P><SPAN><div>FOO</div>', rules);
     ok(result.indexOf("FOO") === result.lastIndexOf("FOO"));
   });
-  
-  
+
+
   test("Bug in IE8 where elements are duplicated when multiple parsed", function() {
     var rules = {
       tags: { p: true, span: true, div: true }
     };
-    
+
     var firstResult = this.sanitize('<SPAN><P><SPAN>foo<P></P>', rules);
     var secondResult = this.sanitize(firstResult, rules);
-    
+
     ok(secondResult.indexOf("foo") !== -1);
     this.equals(firstResult, secondResult);
-    
+
     firstResult = this.sanitize('<SPAN><DIV><SPAN>foo<DIV></DIV>', rules);
     secondResult = this.sanitize(firstResult, rules);
-    
+
     ok(secondResult.indexOf("foo") !== -1);
     this.equals(firstResult, secondResult);
   });
-  
+
   test("Test cleanup mode", function() {
     var rules = {
       tags: { span: true, div: true }
     };
-    
+
     this.equals(
       this.sanitize("<div><span>foo</span></div>", rules, null, true),
       "<div>foo</div>"
     );
-    
+
     this.equals(
       this.sanitize("<span><p>foo</p></span>", rules, null, true),
       "foo"
     );
   });
-  
-  
+
+
   test("Advanced tests for 'img' elements", function() {
     var rules = {
       classes: {
@@ -306,7 +306,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<br class="wysiwyg-clear-left">'
     );
-    
+
     this.equals(
       this.sanitize(
         '<br class="wysiwyg-clear-left">',
@@ -314,7 +314,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<br class="wysiwyg-clear-left">'
     );
-    
+
     this.equals(
       this.sanitize(
         '<br clear="left" class="wysiwyg-clear-left">',
@@ -322,7 +322,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<br class="wysiwyg-clear-left">'
     );
-    
+
     this.equals(
       this.sanitize(
         '<br clear="left" class="wysiwyg-clear-left wysiwyg-clear-right">',
@@ -330,7 +330,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<br class="wysiwyg-clear-left wysiwyg-clear-right">'
     );
-    
+
     this.equals(
       this.sanitize(
         '<br clear="left" class="wysiwyg-clear-right">',
@@ -339,8 +339,8 @@ if (wysihtml5.browser.supported()) {
       '<br class="wysiwyg-clear-left wysiwyg-clear-right">'
     );
   });
-  
-  
+
+
   test("Advanced tests for 'font' elements", function() {
     var rules = {
       classes: {
@@ -360,7 +360,7 @@ if (wysihtml5.browser.supported()) {
         }
       }
     };
-    
+
     this.equals(
       this.sanitize(
         '<font size="1">foo</font>',
@@ -368,7 +368,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-xx-small">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="2">foo</font>',
@@ -376,7 +376,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-small">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="3">foo</font>',
@@ -384,7 +384,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-medium">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="4">foo</font>',
@@ -392,7 +392,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-large">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="5">foo</font>',
@@ -400,7 +400,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-x-large">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="6">foo</font>',
@@ -408,7 +408,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-xx-large">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="7">foo</font>',
@@ -416,7 +416,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-xx-large">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="+1">foo</font>',
@@ -424,7 +424,7 @@ if (wysihtml5.browser.supported()) {
       ),
       '<span class="wysiwyg-font-size-larger">foo</span>'
     );
-    
+
     this.equals(
       this.sanitize(
         '<font size="-1">foo</font>',
@@ -433,8 +433,8 @@ if (wysihtml5.browser.supported()) {
       '<span class="wysiwyg-font-size-smaller">foo</span>'
     );
   });
-  
-  
+
+
   test("Check whether namespaces are handled correctly", function() {
     var rules = {
       tags: {
@@ -448,8 +448,8 @@ if (wysihtml5.browser.supported()) {
       "Unknown tag with namespace gets renamed to span"
     );
   });
-  
-  
+
+
   test("Check whether classes are correctly treated", function() {
     var rules = {
       classes: {
@@ -460,20 +460,20 @@ if (wysihtml5.browser.supported()) {
         footer: "div"
       }
     };
-    
+
     this.equals(
       this.sanitize('<header class="a b c">foo</header>', rules),
       '<span class="a c">foo</span>',
       "Allowed classes 'a' and 'c' are correctly kept and unknown class 'b' is correctly removed."
     );
-    
+
     this.equals(
       this.sanitize('<footer class="ab c d" class="a">foo</footer>', rules),
       '<div class="c">foo</div>',
       "Allowed classes 'c' is correctly kept and unknown class 'b' is correctly removed."
     );
   });
-  
+
   test("Check Firefox misbehavior with tilde characters in urls", function() {
     var rules = {
       tags: {
@@ -488,7 +488,7 @@ if (wysihtml5.browser.supported()) {
         }
       }
     };
-    
+
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=664398
     //
     // In Firefox this:

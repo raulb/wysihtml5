@@ -8,12 +8,12 @@
  */
 wysihtml5.dom.observe = function(element, eventNames, handler) {
   eventNames = typeof(eventNames) === "string" ? [eventNames] : eventNames;
-  
+
   var handlerWrapper,
       eventName,
       i       = 0,
       length  = eventNames.length;
-  
+
   for (; i<length; i++) {
     eventName = eventNames[i];
     if (element.addEventListener) {
@@ -34,7 +34,7 @@ wysihtml5.dom.observe = function(element, eventNames, handler) {
       element.attachEvent("on" + eventName, handlerWrapper);
     }
   }
-  
+
   return {
     stop: function() {
       var eventName,

@@ -1,7 +1,7 @@
 (function(wysihtml5) {
   var undef,
       LINE_BREAK = "<br>" + (wysihtml5.browser.needsSpaceAfterLineBreak() ? " " : "");
-  
+
   wysihtml5.commands.insertLineBreak = {
     exec: function(element, command) {
       if (wysihtml5.commands.support(element, command)) {

@@ -1,6 +1,6 @@
 (function(wysihtml5) {
   var undef;
-  
+
   wysihtml5.commands.italic = {
     exec: function(element, command) {
       return wysihtml5.commands.formatInline.exec(element, command, "i");

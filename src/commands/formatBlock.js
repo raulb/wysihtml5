@@ -7,7 +7,7 @@
       // when the caret is within a H1 and the H4 is invoked, the H1 should turn into H4
       // instead of creating a H4 within a H1 which would result in semantically invalid html
       BLOCK_ELEMENTS_GROUP    = ["H1", "H2", "H3", "H4", "H5", "H6", "P", "BLOCKQUOTE", DEFAULT_NODE_NAME];
-  
+
   /**
    * Remove similiar classes (based on classRegExp)
    * and add the desired class name
@@ -149,7 +149,7 @@
   function _hasClasses(element) {
     return !!wysihtml5.lang.string(element.className).trim();
   }
-  
+
   wysihtml5.commands.formatBlock = {
     exec: function(element, command, nodeName, className, classRegExp) {
       var doc          = element.ownerDocument,

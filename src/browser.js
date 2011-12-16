@@ -11,11 +11,11 @@ wysihtml5.browser = (function() {
       isGecko     = userAgent.indexOf("Gecko")        !== -1 && userAgent.indexOf("KHTML") === -1,
       isWebKit    = userAgent.indexOf("AppleWebKit/") !== -1,
       isOpera     = userAgent.indexOf("Opera/")       !== -1;
-  
+
   return {
     // Static variable needed, publicly accessible, to be able override it in unit tests
     USER_AGENT: userAgent,
-    
+
     /**
      * Exclude browsers that are not capable of displaying and handling
      * contentEditable as desired:
@@ -114,7 +114,7 @@ wysihtml5.browser = (function() {
     firesOnDropOnlyWhenOnDragOverIsCancelled: function() {
       return isWebKit || isGecko;
     },
-    
+
     /**
      * Whether the browser supports the event.dataTransfer property in a proper way
      */
@@ -275,7 +275,7 @@ wysihtml5.browser = (function() {
     supportsSelectionModify: function() {
       return "getSelection" in window && "modify" in window.getSelection();
     },
-    
+
     /**
      * Whether the browser supports the classList object for fast className manipulation
      * See https://developer.mozilla.org/en/DOM/element.classList
@@ -283,14 +283,14 @@ wysihtml5.browser = (function() {
     supportsClassList: function() {
       return "classList" in testElement;
     },
-    
+
     /**
      * Opera needs a white space after a <br> in order to position the caret correctly
      */
     needsSpaceAfterLineBreak: function() {
       return isOpera;
     },
-    
+
     /**
      * Whether the browser supports the speech api on the given element
      * See http://mikepultz.com/2011/03/accessing-google-speech-api-chrome-11/
@@ -305,7 +305,7 @@ wysihtml5.browser = (function() {
       var chromeVersion = userAgent.match(/Chrome\/(\d+)/) || [, 0];
       return chromeVersion[1] >= 11 && ("onwebkitspeechchange" in input || "speech" in input);
     },
-    
+
     /**
      * IE9 crashes when setting a getter via Object.defineProperty on XMLHttpRequest or XDomainRequest
      * See https://connect.microsoft.com/ie/feedback/details/650112

@@ -12,7 +12,7 @@
       trim: function() {
         return str.replace(WHITE_SPACE_START, "").replace(WHITE_SPACE_END, "");
       },
-      
+
       /**
        * @example
        *    wysihtml5.lang.string("Hello #{name}").interpolate({ name: "Christopher" });
@@ -24,7 +24,7 @@
         }
         return str;
       },
-      
+
       /**
        * @example
        *    wysihtml5.lang.string("Hello Tom").replace("Tom").with("Hans");

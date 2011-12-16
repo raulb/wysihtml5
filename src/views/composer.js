@@ -2,7 +2,7 @@
   var dom       = wysihtml5.dom,
       browser   = wysihtml5.browser,
       selection = wysihtml5.selection;
-  
+
   wysihtml5.views.Composer = wysihtml5.views.View.extend(
     /** @scope wysihtml5.views.Composer.prototype */ {
     name: "composer",
@@ -22,7 +22,7 @@
 
     getValue: function(parse) {
       var value = this.isEmpty() ? "" : wysihtml5.quirks.getCorrectInnerHTML(this.element);
-      
+
       if (parse) {
         value = this.parent.parse(value);
       }
@@ -80,7 +80,7 @@
     isEmpty: function() {
       var innerHTML               = this.element.innerHTML,
           elementsWithVisualValue = "blockquote, ul, ol, img, embed, object, table, iframe, svg, video, audio, button, input, select, textarea";
-      return innerHTML === ""              || 
+      return innerHTML === ""              ||
              innerHTML === this.CARET_HACK ||
              this.hasPlaceholderSet()      ||
              (this.getTextContent() === "" && !this.element.querySelector(elementsWithVisualValue));
@@ -88,7 +88,7 @@
 
     _initSandbox: function() {
       var that = this;
-      
+
       this.sandbox = new dom.Sandbox(function() {
         that._create();
       }, {
@@ -111,7 +111,7 @@
 
     _create: function() {
       var that = this;
-      
+
       this.element            = this.sandbox.getDocument().body;
       this.textarea           = this.parent.textarea;
       this.element.innerHTML  = this.textarea.getValue(true);
@@ -123,7 +123,7 @@
       dom.copyAttributes([
         "className", "spellcheck", "title", "lang", "dir", "accessKey"
       ]).from(this.textarea.element).to(this.element);
-      
+
       dom.addClass(this.element, this.config.composerClassName);
 
       // Make the editor look like the original textarea, by syncing styles
@@ -257,7 +257,7 @@
       var properties        = ["width", "height"],
           propertiesLength  = properties.length,
           element           = this.element;
-      
+
       wysihtml5.commands.exec(element, "enableObjectResizing", this.config.allowObjectResizing);
 
       if (this.config.allowObjectResizing) {

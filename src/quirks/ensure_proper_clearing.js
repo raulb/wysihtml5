@@ -8,7 +8,7 @@
  */
 (function(wysihtml5) {
   var dom = wysihtml5.dom;
-  
+
   wysihtml5.quirks.ensureProperClearing = (function() {
     var clearIfNecessary = function(event) {
       var element = this;

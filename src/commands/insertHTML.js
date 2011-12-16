@@ -1,6 +1,6 @@
 (function(wysihtml5) {
   var undef;
-  
+
   wysihtml5.commands.insertHTML = {
     exec: function(element, command, html) {
       if (wysihtml5.commands.support(element, command)) {

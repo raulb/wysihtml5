@@ -3,10 +3,10 @@ module("wysihtml5.dom.contains", {
     this.container = document.createElement("div");
     document.body.appendChild(this.container);
   },
-  
+
   teardown: function() {
     this.container.parentNode.removeChild(this.container);
-  } 
+  }
 });
 
 

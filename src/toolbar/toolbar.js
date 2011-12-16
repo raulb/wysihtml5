@@ -20,7 +20,7 @@
       CLASS_NAME_COMMANDS_DISABLED  = "wysihtml5-commands-disabled",
       CLASS_NAME_COMMAND_ACTIVE     = "wysihtml5-command-active",
       dom                           = wysihtml5.dom;
-  
+
   wysihtml5.toolbar.Toolbar = Base.extend(
     /** @scope wysihtml5.toolbar.Toolbar.prototype */ {
     constructor: function(editor, container) {
@@ -33,7 +33,7 @@
 
       this._observe();
       this.show();
-      
+
       var speechInputLinks  = this.container.querySelectorAll("[data-wysihtml5-command=insertSpeech]"),
           length            = speechInputLinks.length,
           i                 = 0;
@@ -56,7 +56,7 @@
         name    = link.getAttribute("data-wysihtml5-" + type);
         value   = link.getAttribute("data-wysihtml5-" + type + "-value");
         dialog  = this._getDialog(link, name);
-        
+
         mapping[name + ":" + value] = {
           link:   link,
           name:   name,
@@ -145,7 +145,7 @@
           links     = this.commandLinks.concat(this.actionLinks),
           length    = links.length,
           i         = 0;
-      
+
       for (; i<length; i++) {
         // 'javascript:;' and unselectable=on Needed for IE, but done in all browsers to make sure that all get the same css applied
         // (you know, a:link { ... } doesn't match anchors with missing href attribute)
@@ -157,7 +157,7 @@
 
       // Needed for opera
       dom.delegate(container, "[data-wysihtml5-command]", "mousedown", function(event) { event.preventDefault(); });
-      
+
       dom.delegate(container, "[data-wysihtml5-command]", "click", function(event) {
         var link          = event.target,
             command       = link.getAttribute("data-wysihtml5-command"),
@@ -258,5 +258,5 @@
       this.container.style.display = "none";
     }
   });
-  
+
 })(wysihtml5);

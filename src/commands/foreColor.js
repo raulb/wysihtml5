@@ -6,7 +6,7 @@
 (function(wysihtml5) {
   var undef,
       REG_EXP = /wysiwyg-color-[a-z]+/g;
-  
+
   wysihtml5.commands.foreColor = {
     exec: function(element, command, color) {
       return wysihtml5.commands.formatInline.exec(element, command, "span", "wysiwyg-color-" + color, REG_EXP);

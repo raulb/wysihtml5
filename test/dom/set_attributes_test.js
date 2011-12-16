@@ -9,7 +9,7 @@ test("Basic test", function() {
     id:       "foo",
     "class":  "bar"
   }).on(this.element);
-  
+
   equals(this.element.id, "foo");
   equals(this.element.className, "bar");
 });

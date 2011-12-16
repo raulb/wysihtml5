@@ -10,14 +10,14 @@ module("wysihtml5.browser", {
     IE8:          "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 1.1.4322)",
     IE9:          "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7)"
   },
-  
+
   setup: function() {
     this.originalUserAgent          = wysihtml5.browser.USER_AGENT;
     this.originalExecCommand        = document.execCommand;
     this.originalQuerySelector      = document.querySelector;
     this.originalQuerySelectorAll   = document.querySelectorAll;
   },
-  
+
   teardown: function() {
     wysihtml5.browser.USER_AGENT = this.originalUserAgent;
     document.execCommand = this.originalExecCommand;
@@ -30,13 +30,13 @@ module("wysihtml5.browser", {
 test("Check mobile contentEditable support", function() {
   wysihtml5.browser.USER_AGENT = this.userAgents.iPad;
   ok(!wysihtml5.browser.supported(), "iPad is correctly unsupported");
-  
+
   wysihtml5.browser.USER_AGENT = this.userAgents.iPhone;
   ok(!wysihtml5.browser.supported(), "iPhone is correctly unsupported");
-  
+
   wysihtml5.browser.USER_AGENT = this.userAgents.Android;
   ok(!wysihtml5.browser.supported(), "Android is correctly unsupported");
-  
+
   wysihtml5.browser.USER_AGENT = this.userAgents.OperaMobile;
   ok(!wysihtml5.browser.supported(), "Opera Mobile is correctly unsupported");
 });
@@ -53,15 +53,15 @@ test("Check IE support", function() {
   wysihtml5.browser.USER_AGENT = this.userAgents.IE6;
   document.querySelector = document.querySelectorAll = null;
   ok(!wysihtml5.browser.supported(), "IE6 is correctly unsupported");
-  
+
   wysihtml5.browser.USER_AGENT = this.userAgents.IE7;
   document.querySelector = document.querySelectorAll = null;
   ok(!wysihtml5.browser.supported(), "IE7 is correctly unsupported");
-  
+
   wysihtml5.browser.USER_AGENT = this.userAgents.IE8;
   document.querySelector = document.querySelectorAll = function() {};
   ok(wysihtml5.browser.supported(), "IE8 is correctly supported");
-  
+
   wysihtml5.browser.USER_AGENT = this.userAgents.IE9;
   document.querySelector = document.querySelectorAll = function() {};
   ok(wysihtml5.browser.supported(), "IE9 is correctly supported");

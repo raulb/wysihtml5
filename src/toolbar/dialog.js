@@ -35,8 +35,8 @@
       SELECTOR_FORM_ELEMENTS  = "input, select, textarea",
       SELECTOR_FIELDS         = "[data-wysihtml5-dialog-field]",
       ATTRIBUTE_FIELDS        = "data-wysihtml5-dialog-field";
-      
-  
+
+
   wysihtml5.toolbar.Dialog = wysihtml5.lang.Dispatcher.extend(
     /** @scope wysihtml5.toolbar.Dialog.prototype */ {
     constructor: function(link, container) {
@@ -48,7 +48,7 @@
       if (this._observed) {
         return;
       }
-      
+
       var that = this,
           callbackWrapper = function(event) {
             var attributes = that._serialize();
@@ -116,14 +116,14 @@
     /**
      * Takes the attributes of the "elementToChange"
      * and inserts them in their corresponding dialog input fields
-     * 
+     *
      * Assume the "elementToChange" looks like this:
      *    <a href="http://www.google.com" target="_blank">foo</a>
      *
      * and we have the following dialog:
      *    <input type="text" data-wysihtml5-dialog-field="href" value="">
      *    <input type="text" data-wysihtml5-dialog-field="target" value="">
-     * 
+     *
      * after calling _interpolate() the dialog will look like this
      *    <input type="text" data-wysihtml5-dialog-field="href" value="http://www.google.com">
      *    <input type="text" data-wysihtml5-dialog-field="target" value="_blank">

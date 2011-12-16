@@ -1,6 +1,6 @@
 /**
  * Rich Text Query/Formatting Commands
- * 
+ *
  * @author Christopher Blum <christopher.blum@xing.com>
  */
 wysihtml5.commands = {
@@ -15,7 +15,7 @@ wysihtml5.commands = {
   support: function(element, command) {
     return wysihtml5.browser.supportsCommand(element.ownerDocument, command);
   },
-  
+
   /**
    * Check whether the browser supports the given command
    *
@@ -37,7 +37,7 @@ wysihtml5.commands = {
       } catch(e) {}
     }
   },
-  
+
   /**
    * Check whether the current command is active
    * If the caret is within a bold text, then calling this with command "bold" should return true
@@ -63,7 +63,7 @@ wysihtml5.commands = {
       }
     }
   },
-  
+
   /**
    * Get the current command's value
    *

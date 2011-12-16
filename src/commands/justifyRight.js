@@ -2,7 +2,7 @@
   var undef,
       CLASS_NAME  = "wysiwyg-text-align-right",
       REG_EXP     = /wysiwyg-text-align-[a-z]+/g;
-  
+
   wysihtml5.commands.justifyRight = {
     exec: function(element, command) {
       return wysihtml5.commands.formatBlock.exec(element, "formatBlock", null, CLASS_NAME, REG_EXP);

@@ -1,6 +1,6 @@
 (function(wysihtml5) {
   var undef;
-  
+
   wysihtml5.commands.insertUnorderedList = {
     exec: function(element, command) {
       var doc = element.ownerDocument,

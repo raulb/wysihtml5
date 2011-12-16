@@ -69,7 +69,7 @@ The editor comes with a simple event handling:
   editor.observe("change", function() {
     alert("The content of the editor has changed")
   });
-  
+
   editor.observe("load", function() {
     alert("wysihtml5 is ready for take off!");
   });
@@ -100,13 +100,13 @@ h2. Progressive-Enhancement/Initialization Step By Step
 # Checks whether the browser supports rich text editing properly (stops here if not)
 # Sets a class "wysihtml5-supported" on the <code><body></code> of the page (can be used to toggle text hints on the page via CSS)
 # Creates an inline <code><iframe></code> with <code><body contenteditable="true"></code>
-# Copies textarea box styles (float, border, position, box-shadow, ...) to the 
+# Copies textarea box styles (float, border, position, box-shadow, ...) to the
 <code><iframe></code>
-# Copies textarea text styles (color, font-size, font-family, text-indent, ...) to 
+# Copies textarea text styles (color, font-size, font-family, text-indent, ...) to
 the iframe's <code><body></code>
-# Copies several attributes (spellcheck, autofocus, placeholder, className, title, ...) 
+# Copies several attributes (spellcheck, autofocus, placeholder, className, title, ...)
 from the <code><textarea></code> to the iframe's <code><body></code>
-# Checks whether HTMl5 autofocus and placeholder attributes are set and 
+# Checks whether HTMl5 autofocus and placeholder attributes are set and
 simulates their logic on the iframe's <code><body></code>
 # Hides the <code><textarea></code>
 # Initializes sync logic (text you typed into the iframe's <code><body></code> is automatically
@@ -138,7 +138,7 @@ A compatibility table for rich text query commands can be found here:
 A pure native rich text editor with HTML validator and live source preview is here:
 "http://tifftiff.de/contenteditable/editor.html":http://tifftiff.de/contenteditable/editor.html
 
-h2. Modifications by me 
+h2. Modifications by me
 
 Now, in the toolbar you can add an embed iframe video with two differentes ways. You can insert the source video and its size (width + height) or put its all embed code directly using the option *insert embed code*.
 

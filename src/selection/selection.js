@@ -1,7 +1,7 @@
 (function(wysihtml5) {
   var PLACEHOLDER_TEXT = "--_CARET_--",
       dom              = wysihtml5.dom;
-  
+
       // ----------------- private -------------- \\
   function _createPlaceholderNode(doc) {
     // Important: placeholder element needs to be an inline element
@@ -36,7 +36,7 @@
       return null;
     }
   }
-  
+
   function _getCumulativeOffsetTop(element) {
     var top = 0;
     if (element.parentNode) {
@@ -47,7 +47,7 @@
     }
     return top;
   }
-  
+
   wysihtml5.selection = {
     PLACEHOLDER_TEXT: PLACEHOLDER_TEXT,
 
@@ -445,6 +445,6 @@
       return selection.setSingleRange(range);
     }
   };
-  
+
 })(wysihtml5);
 

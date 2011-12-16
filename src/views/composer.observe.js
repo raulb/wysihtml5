@@ -19,7 +19,7 @@
         "73": "italic",   // I
         "85": "underline" // U
       };
-  
+
   wysihtml5.views.Composer.prototype.observe = function() {
     var that                = this,
         state               = this.getValue(),
@@ -148,7 +148,7 @@
       IMG: "Image: ",
       A:   "Link: "
     };
-    
+
     dom.observe(element, "mouseover", function(event) {
       var target   = event.target,
           nodeName = target.nodeName,
